@@ -1,0 +1,43 @@
+\newcommand{\eg}[1]{(e.g.\ #1)}
+
+\newcommand{\para}[1]{\paragraph{#1}\mbox{}\\}
+
+\newcommand{\code}[1]{\mintinline{c}{#1}}
+
+\newcommand{\fig}[3]{\begin{figure}[H] \centering
+    \includegraphics[max width=\textwidth]{images/#1}
+    \caption[#2]{#3\label{#1}}
+  \end{figure}
+}
+
+\newcommand{\sidefig}[3]{\begin{sidewaysfigure}[ht]
+ \centering
+    \includegraphics[max width=\textwidth]{images/#1}
+    \caption[#2]{#3\label{#1}}
+  \end{sidewaysfigure}
+}
+
+% \renewcommand{\fig}[2]{}
+
+\usepackage[colorinlistoftodos]{todonotes}
+\newcommand{\todoQ}[1]{\todo[inline,color=yellow]{\textbf{Todo Quote:\\}#1}}
+\newcommand{\todoT}[1]{\todo[inline,color=yellow]{\textbf{Todo Text:\\}#1}}
+\newcommand{\todoD}[1]{\todo[inline,color=green]{\textbf{Todo Diagramm:\\}#1}}
+
+\newcommand{\figref}[1]{Figure \vref{#1}}
+
+\newcommand\invisiblesection[1]{%
+  \refstepcounter{section}%
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}%
+  \sectionmark{#1}}
+
+\AtBeginDocument{
+\let\subsectionautorefname\sectionautorefname
+\let\subsubsectionautorefname\sectionautorefname
+}
+
+\newminted[typescript]{TypeScript}{}
+
+\AtEveryBibitem{%
+  \clearfield{note}%
+}

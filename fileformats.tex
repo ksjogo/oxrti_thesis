@@ -1,0 +1,161 @@
+\hypertarget{btf-file-format}{%
+\subsection{BTF File Format}\label{btf-file-format}}
+
+This section describes the BTF file format. The aim of this file format
+is to provide a generic container for BTF data to be specified using a
+variety of common formats. Files shall have the \texttt{.btf.zip}
+extension.
+
+\hypertarget{file-structure}{%
+\subsubsection{File Structure}\label{file-structure}}
+
+A BTF file is a ZIP file containing the following:
+\begin{itemize}
+\item A \textbf{manifest}
+file in JSON format, named \texttt{manifest.json}. The manifest contains
+all information about the BRDF/BSDF model being used, including the
+names for the available \textbf{channels} (e.g. \texttt{R}, \texttt{G}
+and \texttt{B} for the 3-channel RGB), the names of the necessary
+\textbf{coefficients} (e.g.~bi-quadratic coefficients) and the
+\textbf{image file format} for each channel.
+\item A single folder named
+\texttt{data}, with sub-folders having names in 1-to-1 correspondence
+with the channels specified in the manifest.
+\item Within each channel
+folder, greyscale image files having names in 1-to-1 correspondence with
+the coefficients specified in the manifest, each in the image file
+format specified in the manifest for the corresponding channel. For
+example, if one is working with RGB format (3-channels named \texttt{R},
+\texttt{G} and \texttt{B}) in the PTM model (five coefficients
+\texttt{a2}, \texttt{b2}, \texttt{a1}, \texttt{b1} and \texttt{c},\!
+specifying a bi-quadratic) using 16-bit greyscale bitmaps, the file
+\texttt{/data/B/a2.bmp} is the texture encoding the \texttt{a2}
+coefficient for the blue channel of each point in texture space.
+\item The
+datafiles are all in reversed scanline order (meaning from bottom to
+top), to keep aligned with the original PTM format and allow easier
+loading into WebGL.
+\end{itemize}
+
+\hypertarget{manifest}{%
+\subsubsection{Manifest}\label{manifest}}
+
+The manifest for the BTF file format is a JSON file with root
+dictionary. The \texttt{root} element has two mandatory child elements:
+one named \texttt{data}, and one named \texttt{name} with the option of
+additional child elements (with different names) left open to future
+extensions of the format.
+\begin{itemize}
+\item The \texttt{name} element is a string with a
+name of the contained object.
+\item The \texttt{data} element has for
+entries, named \texttt{width}, \texttt{height}, \texttt{channels} and
+\texttt{channel-model}. The \texttt{width} and \texttt{height}
+attributes have values in the positive integers describing the
+dimensions of the BTDF. The \texttt{channel-model} attribute has value a
+non-empty alphanumeric string uniquely identifying the BRDF/BSDF colour
+model used by the BTF file (see \protect\hyperlink{Options}{Options}
+section below). The \texttt{channels} element has an arbitrary amout of
+named \texttt{channel} entries, according to the \texttt{channel-model}.
+* Additionally the \texttt{data} element has one untyped entry named
+\texttt{formatExtra}, where format implementation specific data can be
+stored.
+\item Each \texttt{channel} has an \texttt{coefficents} child
+consisting of an arbitrary number of \texttt{coefficent} entries, as
+well as one \texttt{coefficient-model} attribute. The
+\texttt{coefficient-model} attribute has value a non-empty alphanumeric
+string uniquely identifying the BRDF/BSDF approximation model used by
+the BTF file (see \protect\hyperlink{Options}{Options} section below). *
+Each \texttt{coefficient} element has one attribute: \texttt{format}.
+The \texttt{format} attribute has value a non-empty alphanumeric string
+uniquely identifying the image file format used to store the channel
+values (see \protect\hyperlink{Options}{Options} section below).
+\end{itemize}
+
+\hypertarget{textures}{%
+\subsubsection{Textures}\label{textures}}
+
+Each image file \texttt{/data/CHAN/COEFF.EXT} has the same dimensions
+specified by the \texttt{width} and \texttt{height} attributes of the
+\texttt{data} element in the manifest, and is encoded in the greyscale
+image file format specified by the \texttt{format} attribute of the
+unique \texttt{coefficient} element with attribute \texttt{name} taking
+the value \texttt{COEFF} (the extension \texttt{.EXT} is ignored). The
+colour value of a pixel \texttt{(u,v)} in the image is the value for
+coefficient \texttt{COEFF} of channel \texttt{CHAN} in the BRDF/BSDF for
+point \texttt{(u,v)}, according to the model jointly specified by the
+values of the attribute \texttt{model} for element \texttt{channels}
+(colour model) and the attribute \texttt{model} for element
+\texttt{coefficients} (approximation model).
+
+\hypertarget{options}{%
+\subsubsection{Options}\label{options}}
+
+At present, the following values are defined for attribute
+\texttt{channel-model} of element \texttt{channels}.
+\begin{itemize}
+\item \texttt{RGB}: the
+3-channel RGB colour model, with channels named \texttt{R}, \texttt{G}
+and \texttt{B}. This colour model is currently under implementation. *
+\texttt{LRGB}: the 4-channel LRGB colour model, with channels named
+\texttt{L}, \texttt{R}, \texttt{G} and \texttt{B}. This colour model is
+currently under implementation.
+\item \texttt{SPECTRAL}: the spectral
+radiance model, with an arbitrary non-zero number of channels named
+either all by wavelength (format \texttt{-\/-\/-nm}, with
+\texttt{-\/-\/-} an arbitrary non-zero number) or all by frequency
+format \texttt{-\/-\/-Hz}, with \texttt{-\/-\/-} an arbitrary non-zero
+number. This colour model is planned for future implementation.
+\end{itemize}
+
+At present, the following values are defined for attribute
+\texttt{model} of element coefficients, where the ending character
+\texttt{*} is to be replaced by an arbitrary number greater than or
+equal to 1.
+\begin{itemize}
+\item \texttt{flat}: flat approximation model (no dependence on
+light position). This approximation model is currently under
+implementation.
+\item \texttt{RTIpoly*}: order-\texttt{*} polynomial
+approximation model for RTI (single view-point BRDF). This approximation
+model is currently under implementation.
+\item \texttt{RTIharmonic*}:
+order-\texttt{*} hemispherical harmonic approximation model for RTI
+(single view-point BRDF). This approximation model is currently under
+implementation.
+\item \texttt{BRDFpoly*}: order-\texttt{*} polynomial
+approximation model for BRDFs. This approximation model is planned for
+future implementation.
+\item \texttt{BRDFharmonic*}: order-\texttt{*}
+hemispherical harmonic approximation model BRDFs. This approximation
+model is planned for future implementation.
+\item \texttt{BSDFpoly*}:
+order-\texttt{*} polynomial approximation model for BSDFs. This
+approximation model is planned for future implementation. *
+\texttt{BSDFharmonic*}: order-\texttt{*} spherical harmonic
+approximation model for BSDFs. This approximation model is planned for
+future implementation.
+\end{itemize}
+
+At present, the following values are defined for attribute
+\texttt{format} of elements tagged \texttt{coefficient}, where the
+ending character \texttt{*} is the bit-depth, to be replaced by an
+allowed positive multiple of 8.
+\begin{itemize}
+\item \texttt{BMP*}: greyscale BMP file
+format with the specified bit-depth (8, 16, 24 or 32). Support for this
+format is currently under implementation.
+\item \texttt{PNG*}: PNG file
+format encoding the specified bit-depth (8, 16, 24, 32, 48 or 64).
+Support for this format is currently under implementation. Different PNG
+colour options are used to support different bit-depths: *
+\texttt{Grayscale} with 8-bit/channel to encode 8-bit bit-depth. *
+\texttt{Grayscale} with 16-bit/channel to encode 16-bit bit-depth. *
+\texttt{Truecolor} with 8-bit/channel to encode 24-bit bit-depth. *
+\texttt{Truecolor\ and\ alpha} with 8-bit/channel to encode 32-bit
+bit-depth.
+\item \texttt{Truecolor} with 16-bit/channel to encode 48-bit
+bit-depth.
+\item \texttt{Truecolor\ and\ alpha} with 16-bit/channel to
+encode 64-bit bit-depth.
+\end{itemize}

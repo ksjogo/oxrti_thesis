@@ -1,0 +1,115 @@
+\section{Implementation}
+
+\subsection{Overview}
+This section explains the current implementation of the developed tool set, it
+is primarily targeted to fulfill the dissertation's requirements. But is also
+aiming to be helpful for users wanting to understand the underlying systems and
+prepare them for potentially joining the development effort. Abridged code
+extracts are used as of their state for thesis submission, while the main
+principles will hold, later readers are asked to please consult the actual
+source code if any discrepancies arise. First the main libraries are shortly
+explained in their relevance to the program, second the largely abstract plugin
+architecture is shown, third the main plugins are presented and last the
+delivery processes to the end users are described.
+
+
+All implementation files are contained and delivered inside a single git
+repository, which is freely available online:
+\url{https://github.com/ksjogo/oxrti}. All following file paths are relative to that repository's root. All future development will
+be immediately available there and the current compiled software version is
+always fed automatically from it into the hosted version at \url{https://oxrtimaster.azurewebsites.net/api/azurestatic}.
+
+\subsection{Libraries}
+\begin{description}
+\item[TypeScript:]  The official header line of TypeScript show some points why
+  it was picked for this project: ``TypeScript is a typed superset of JavaScript that compiles
+  to plain JavaScript. Any browser. Any host. Any OS\@. Open
+  source.''\cite{noauthor_typescript_2018} Which fits
+  requirements~\ref{req_os},~\ref{req_system}. Whereas plain JavaScript would
+  have allowed slightly easier initial on-boarding and maybe easier immediate
+  code `hacks', TypeScript will provide better stability in the long run and a
+  quite improved developer experience (requirement~\ref{req_dx}) in the long
+  run. With the full typed hook system (compare \autoref{sec_hooks}) it ensures
+  that a compiled plugin will not have runtime type problems, reducing the
+  amount of switching between code editor and the running software. The whole
+  project is setup in a way to fully embrace editor tooling, Visual Studio
+  Code\cite *{noauthor_visual_nodate} and Emacs\cite*{noauthor_gnu_nodate} are
+  the `officially' tested editors of the project. Code is recommended as it will
+  support all developer features out of the box. The installation of the
+  tslint\cite*{noauthor_tslint_nodate} plugin\cite*{noauthor_tslint_nodate-1} is
+  recommended to keep a consistent code style, which is configured within the
+  \emph{tslint.json} file.
+\item[React]\todoT{React}
+\item[mobx]\todoT{mobx}
+\item[mobx-state-tree]\todoT{mobx-state-tree}
+\item[gl-react]\todoT{gl-react}
+\item[webpack]\todoT{webpack}\cite{renaudeau_gl-react_2018}
+\item[electron]\todoT{electron}
+\item[misc]\todoT{misc}\cite{noauthor_mobx:_2018}
+\end{description}
+
+\subsection{Plugin architectures}
+\todoT{Plugin architectures}
+
+\begin{typescript}
+  function murks() : number{}
+\end{typescript}
+
+\subsection{Hooks}\label{sec_hooks}
+
+\input{fileformats}
+
+
+\subsection{Loader}
+
+
+\subsection{State Management}
+\todoT{state management}
+\todoT{state import/export}
+\todoD{redux}
+\todoD{mobx actions}
+
+\subsection{Components}
+\todoT{single component units}
+
+\subsection{Renderer Stack}
+\todoT{base rendering nodes}
+\todoD{stacked components}
+\todoD{effects}
+
+\subsection{Plugins}
+\todoT{Plugins API}
+\subsubsection{Converter Plugin}
+\todoT{Converter Plugin}
+\subsubsection{PTMConverter Plugin}
+\todoT{PTMConverter Plugin}
+\subsubsection{Renderer Plugin}
+\todoT{Renderer Plugin}
+\todoT{Base Node}
+\todoT{WebGL texture packing}
+\subsubsection{PTM Renderer Plugin}
+\todoT{PTM Renderer Plugin}
+\todoT{Dynamic Shaders}
+\todoT{RGB vs LRGB}
+\subsubsection{Light Control Plugin}
+\todoT{Light Control Plugin}
+\subsubsection{Rotation Plugin}
+\todoT{Rotation Plugin}
+\subsubsection{Zoom Plugin}
+\todoT{Zoom Plugin}
+\subsubsection{QuickPan Plugin}
+\todoT{Zoom Plugin}
+\subsubsection{Paint Plugin}
+\todoT{Zoom Plugin}
+\subsubsection{Import Export Plugin }
+\todoT{Automatic Import Export}
+
+\subsection{Applications}
+\todoT{Other related graphics}
+\todoT{Applications}
+\subsubsection{Standalone Website}
+\todoT{Standalone Website}
+\subsubsection{Embeddable}
+\todoT{Embeddable}
+\subsubsection{Electron}
+\todoT{Electron App deliverable}
