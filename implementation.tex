@@ -7,7 +7,7 @@ aiming to be helpful for users wanting to understand the underlying systems and
 prepare them for potentially joining the development effort. Abridged code
 extracts are used as of their state for thesis submission, while the main
 principles will hold, later readers are asked to please consult the actual
-source code if any discrepancies arise. First the main libraries are shortly
+source code if any discrepancies arise or reexport the document. First the main libraries are shortly
 explained in their relevance to the program, second the largely abstract plugin
 architecture is shown, third the main plugins are presented and last the
 delivery processes to the end users are described.
@@ -56,9 +56,24 @@ always fed automatically from it into the hosted version at \url{https://oxrtima
 \end{typescript}
 
 \subsection{Hooks}\label{sec_hooks}
+The hook system allows stable and prioritized interactions between the different
+plugins. All available hooks are declared inside the {Hook.tsx} file, which
+offers 3 different types of hooks:
+\sourceBE{Hook.tsx}
+These types are used to first declare single hook types (which will be discussed
+within the plugins consuming them) and then construct the whole hook
+configuration tree for all plugins:
+\begin{typescript}
+type HookTypes = {
+  ActionBar?: ConfigHook<ActionBar>,
+  AfterPluginLoads?: FunctionHook,
+  AppView?: ComponentHook,
+...
+}
+\end{typescript}
+
 
 \input{fileformats}
-
 
 \subsection{Loader}
 
@@ -79,11 +94,19 @@ always fed automatically from it into the hosted version at \url{https://oxrtima
 
 \subsection{Plugins}
 \todoT{Plugins API}
+
+\subsubsection{TabView Plugin}
+\source{AppHooksBegin}{AppHooksEnd}{Hook.tsx}
+
+
 \subsubsection{Converter Plugin}
 \todoT{Converter Plugin}
 \subsubsection{PTMConverter Plugin}
 \todoT{PTMConverter Plugin}
 \subsubsection{Renderer Plugin}
+\source{RendererHooksBegin}{RendererHooksEnd}{Hook.tsx}
+
+
 \todoT{Renderer Plugin}
 \todoT{Base Node}
 \todoT{WebGL texture packing}

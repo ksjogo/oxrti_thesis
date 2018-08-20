@@ -36,8 +36,22 @@
 \let\subsubsectionautorefname\sectionautorefname
 }
 
-\newminted[typescript]{TypeScript}{}
+\newminted[typescript]{TypeScript}{linenos,tabsize=2,breaklines}
 
 \AtEveryBibitem{%
   \clearfield{note}%
 }
+
+\newcommand{\sourceExplicit}[3]{%
+\immediate\write18{./cutter.sh #1 #2 #3}%
+\inputminted[linenos,tabsize=2,breaklines]{TypeScript}{minted.tmp}%
+\immediate\write18{rm minted.tmp}%
+}%
+
+\newcommand{\sourceBE}[1]{%
+  \sourceExplicit{begin}{end}{../oxrti/src/#1}%
+}%
+
+\newcommand{\source}[3]{%
+  \sourceExplicit{#1}{#2}{../oxrti/src/#3}%
+}%
