@@ -2,7 +2,6 @@
 
 \newcommand{\para}[1]{\paragraph{#1}\mbox{}\\}
 
-\newcommand{\code}[1]{\mintinline{c}{#1}}
 
 \newcommand{\fig}[3]{\begin{figure}[H] \centering
     \includegraphics[max width=\textwidth]{images/#1}
@@ -41,8 +40,12 @@
 }
 
 \AtBeginEnvironment{minted}{%
-  \renewcommand{\fcolorbox}[4][]{#4}}
-\expandafter\def\csname PY@tok@err\endcsname{}
+  \renewcommand{\fcolorbox}[4][]{#4}
+}
+
+%\AtBeginEnvironment{mintinline}{%
+  \renewcommand{\fcolorbox}[4][]{#4}
+%}
 
 \newminted[typescript]{TypeScript}{linenos,tabsize=4,breaklines}
 
@@ -59,3 +62,5 @@
 \newcommand{\source}[3]{%
   \sourceExplicit{#1}{#2}{../oxrti/src/#3}%
 }%
+
+\newcommand{\code}[1]{\mintinline{c}{#1}}

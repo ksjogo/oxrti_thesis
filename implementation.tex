@@ -167,9 +167,44 @@ const Store = types.model("Store", {
 })
 \end{typescript}
 This syntax was deemed to convoluted, as it is a lot more complex than standard
-JavaScript/TypeScript ES6 classes as shown in the React description above and
+JavaScript/TypeScript classes, which were introduced by the ES6 version, as shown in the React description above and
 thus being in conflict with requirement~\ref{req_easy}.
-\item[classy-mst:]
+\item[classy-mst:] There is an option to use a more traditional syntax instead
+  though, with the classy-mst library, with
+  which the example above becomes\cite*{noauthor_classy-mst:_2018}:
+\begin{typescript}
+const TodoData = types.model({
+	title: types.string,
+	done: false
+
+});
+
+class TodoCode extends shim(TodoData) {
+	@action
+	toggle() {
+		this.done = !this.done;
+	}
+}
+
+const Todo = mst(TodoCode, TodoData, 'Todo');
+\end{typescript}
+ Weststrate, the original author of MobX initially was sceptic of this
+ syntax\cite*{noauthor_alternative_nodate} as it was changing the semantics of
+ ES6 classes, as classy-mst's methods will be automatically bound to the
+ instance. This boundness is an advantage for this implementation though, as the
+ hook configurations can just refer to \code{this.someMethod} instead of \code{this.someMethod.bind(this)}.
+The \code{@action} is a decorator, enabling the following method to change the
+state/properties of the model, as MST prohibits that by default. Reactions/View
+updates will only happen after the outermost action finished executing.
+\item[WebGL:] The increasing support of the WebGL stack is the main reason, why
+  it is now feasible to implement a full RTI software stack with plain web
+  technologies, as it ``enables web content to use an API based on OpenGL ES 2.0
+  to perform 3D rendering in an HTML \code{<canvas>} in browsers that support it
+  without the use of plug-ins."\cite*{noauthor_webgl_nodate-1}
+  \fig{webglcomp}{WebGL compability}{WebGL compability as from the Mozilla
+    Developer network\cite*{noauthor_webgl_nodate}.}
+
+  \todoT{gl-react}
 \item[gl-react:]\todoT{gl-react}
 \item[webpack:]\todoT{webpack}\cite{renaudeau_gl-react_2018}
 \item[electron:]\todoT{electron}
