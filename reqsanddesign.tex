@@ -1,21 +1,26 @@
 \section{Requirements and Design}
-\subsection{Functional Requirements}
+\subsection{Requirements}
+Distilling these, I arrived at the following functional requirements, which are
+logically grouped into fileformat/support and viewer.
 
-
-Distilling these, I arrived at the following functional requirements:
+For the fileformat:
 \begin{enumerate}
-\item thing \label{req0}
-\item thing
-\item Runnable on all major operating systems. \label{req_system}
-\item Easy installation for researchers. \label{req_install}
+\item Support for the PTM\cite*{library_of_congress_polynomial_2018}  fileformat.
+\item Support for the RTI\cite*{library_of_congress_reflectance_2018} fileformat.
+\item Conversion of the formats above into a unified format.
+\item Extended metadata support.
+\item Support for high resolutions.
+\item Support for higher bitdepths per pixel than the 8 of PTM/RTI.
+\item Easy exchange between multiple researchers.
 \end{enumerate}
 
-\todoT{Functional Requirements}
-\todoT{Concrete file formats}
-\todoT{Concrete lightning models}
-\todoT{Concrete usability features}
+For the viewer component:
+\begin{enumerate}[resume]
+\item Runnable on all major operating systems and/or web browsers.\label{req_system}
+\item Lightning Controls.
+\item Quick navigation functionality.
+\end{enumerate}
 
-\subsection{Non-Functional Requirements}
 Continuing the enumeration of the functional requirements, following functional
 requirements were extracted:
 \begin{enumerate}[resume]
@@ -24,13 +29,14 @@ requirements were extracted:
 \item Easy on-boarding of new developers, either scientists in a research context
   or students in an education context. \label{req_easy}
 \item Good developer experience. \label{req_dx}
-\item Adequate performance, at least keeping up with current implementations. \label{req_performance}
-
+\item Adequate performance, at least keeping up with current
+  implementations. \label{req_performance}
+\item Easy installation for
+  researchers. \label{req_install}
+\item ``Web''-Based.
+\item Instant reactiveness. \label{req_react}
+\item Reasonable file sizes for instant transfer/viewing.
 \end{enumerate}
-
-\todoT{Non-Functional Requirements}
-\todoT{Interactivity}
-
 
 \subsection{State-Driven}
 \todoT{State-Driven}

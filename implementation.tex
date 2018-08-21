@@ -38,14 +38,142 @@ always fed automatically from it into the hosted version at \url{https://oxrtima
   support all developer features out of the box. The installation of the
   tslint\cite*{noauthor_tslint_nodate} plugin\cite*{noauthor_tslint_nodate-1} is
   recommended to keep a consistent code style, which is configured within the
-  \emph{tslint.json} file.
-\item[React]\todoT{React}
-\item[mobx]\todoT{mobx}
-\item[mobx-state-tree]\todoT{mobx-state-tree}
-\item[gl-react]\todoT{gl-react}
-\item[webpack]\todoT{webpack}\cite{renaudeau_gl-react_2018}
-\item[electron]\todoT{electron}
-\item[misc]\todoT{misc}\cite{noauthor_mobx:_2018}
+  \emph{tslint.json} file. Most importantly TypeScript adds type declarations
+  (and inference) to JavaScript, e.g.:
+\begin{typescript}
+const thing = function (times: number, other: (index: number) => boolean) { ... }
+\end{typescript}
+would define \emph{thing} as a function, taking a numbers as first argument and
+another function (taking a number as first parameter and returning a boolean) as
+second argument. The other most used TypeScript features inside the codebase are
+Classes\cite*{noauthor_classes_nodate},
+Decorators\cite*{noauthor_decorators_nodate} and
+Generics\cite*{noauthor_generics_nodate}, which will be discussed at their first
+appearance inside the code samples.
+
+\item[React:] The two main points on React's official website are
+  ``Declarative'' and ``Component Based''\cite*{noauthor_react_nodate}, which
+  is best shown by an extended example from their website, which exemplifies
+  multiple patterns found through the oxrti implementation. The most important
+  concept is the jump from having a stateful HTML document, which the JavaScript
+  code is manipulating directly, e.g.:
+  \begin{typescript}
+document.getElementById('gsr').innerHTML="<p>You shouldn't do this</p>"
+\end{typescript}
+Which is diametric to requirements~\ref{req_easy} and~\ref{req_dx} as it would
+require developers to manually keep track of all data cross-references (e.g.\
+the pan values having to automatically adapt to the current zoom level). A
+declarative approach instead allows much better and easier implemented
+reactiveness and better performance (requirements~\ref{req_performance}
+and~\ref{req_react}) as the necessary changes can be track and components be
+updated selectively.
+
+\begin{typescript}
+// a class represents a single component
+class Timer extends React.Component {
+  // the parent component can pass on props to it
+  constructor(props) {
+    super(props);
+    this.state = { seconds: 0 };
+  }
+
+  tick() {
+    //  the state is updated and the component is automatically rerendered
+    this.setState(prevState => ({
+      seconds: prevState.seconds + 1
+    }));
+  }
+
+  // called after the component was created/added to the browser window
+  componentDidMount() {
+    this.interval = setInterval(() => this.tick(), 1000);
+  }
+
+  // called before the component will be deleted/removed from the browser window
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  // the actual rendering code
+  // html can be directly embedded into react components
+  // {} blocks will be evaluated when the render method is called
+  // which will happen any time the props or its internal states updates
+  render() {
+    return (
+      <div>
+        Seconds: {this.state.seconds}
+      </div>
+    );
+  }
+}
+
+// mountNode is a reference to a DOM Node
+// the component will be mounted inside that node
+ReactDOM.render(<Timer />, mountNode);
+\end{typescript}
+In conjunction with mobx and TypeScript no classes are used for React components
+though, but instead Stateless Functional Components
+(`SFCs'\cite*{ikeuchi_react_2017}). These SFCs are plain functions, only
+depending on their passed properties:
+\begin{typescript}
+function SomeComponent(props: any) {
+ return <p>{props.first} {props.first}</p>
+}
+\end{typescript}
+This component could then be used by:
+\begin{typescript}
+ <SomeComponent first="Hello" second="World"/>
+\end{typescript}
+This component systems allows the plugins to define some components and then
+`link' them into the program via the hook system, which will be explored later.
+\item[mobx:] Its main tagline is ``Simple, scalable state
+  management''\cite*{noauthor_mobx:_2018}. An introducing overview is shown
+  in~\autoref{mobxflow}. Broadly speaking MobX introduces observable objects.
+  Instead of mentioned DOM handling or property passing inside React trees,
+  components can just retrieve their values from the observable objects and will
+  be automatically refreshed if the read values change. This for example makes
+  the implementation of the QuickPan plugin extremely easy, as it can just read
+  the zoom, pan, etc.\ values of the other plugins and will automatically receive
+  all updates without any further manual observation handling.
+  \sidefig{mobxflow}{MobX Flow}{Taken from
+    Weststrate\cite*{noauthor_mobx:_2018}. Actions in the oxrti context are most
+  often initially user actions, which are then calling into plugins to change
+  the state. The state is mostly encapsulated on a plugin basis with usage of
+  the mobx-state-tree library, which also encapsulates most computed values.
+  Reactions are most often the previously discussed React components.}
+\item[mobx-state-tree:] ``Central in MST (mobx-state-tree) is the concept of a
+  living tree. The tree consists of mutable, but strictly protected
+  objects''\cite*{noauthor_mobx-state-tree:_2018} This allows the implementation
+  to have one shared state tree which can be used to safely access all data. All
+  nodes inside the state tree are MobX observables. A simple tree with plain MST
+  would look like this:
+\begin{typescript}
+// define a model type
+const Todo = types
+ .model("Todo", {
+  // state of every model
+  title: types.string,
+  done: false
+ })
+ .actions(self => ({
+  //methods bounds to the current model instance
+  toggle() {
+   self.done = !self.done
+  }
+ }))
+// create a tree root, with a property todos
+const Store = types.model("Store", {
+    todos: types.array(Todo)
+})
+\end{typescript}
+This syntax was deemed to convoluted, as it is a lot more complex than standard
+JavaScript/TypeScript ES6 classes as shown in the React description above and
+thus being in conflict with requirement~\ref{req_easy}.
+\item[classy-mst:]
+\item[gl-react:]\todoT{gl-react}
+\item[webpack:]\todoT{webpack}\cite{renaudeau_gl-react_2018}
+\item[electron:]\todoT{electron}
+\item[misc:]\todoT{misc}\cite{noauthor_mobx:_2018}
 \end{description}
 
 \subsection{Plugin architectures}
@@ -53,23 +181,6 @@ always fed automatically from it into the hosted version at \url{https://oxrtima
 
 \begin{typescript}
   function murks() : number{}
-\end{typescript}
-
-\subsection{Hooks}\label{sec_hooks}
-The hook system allows stable and prioritized interactions between the different
-plugins. All available hooks are declared inside the {Hook.tsx} file, which
-offers 3 different types of hooks:
-\sourceBE{Hook.tsx}
-These types are used to first declare single hook types (which will be discussed
-within the plugins consuming them) and then construct the whole hook
-configuration tree for all plugins:
-\begin{typescript}
-type HookTypes = {
-  ActionBar?: ConfigHook<ActionBar>,
-  AfterPluginLoads?: FunctionHook,
-  AppView?: ComponentHook,
-...
-}
 \end{typescript}
 
 
@@ -91,13 +202,45 @@ type HookTypes = {
 \todoT{base rendering nodes}
 \todoD{stacked components}
 \todoD{effects}
+\subsubsection{Texture Loading}
+
+
+\subsection{Hooks}\label{sec_hooks}
+The hook system allows stable and prioritized interactions between the different
+plugins. All available hooks are declared inside the {Hook.tsx} file, which
+offers 3 different types of hooks:
+\sourceBE{Hook.tsx}
+These types are used to first declare single hook types (which will be discussed
+within the plugins consuming them) and then construct the whole hook
+configuration tree for all plugins:
+\begin{typescript}
+type HookTypes = {
+  ActionBar?: ConfigHook<ActionBar>,
+  AfterPluginLoads?: FunctionHook,
+  AppView?: ComponentHook,
+...
+}
+\end{typescript}
+
 
 \subsection{Plugins}
 \todoT{Plugins API}
 
+\subsubsection{Base Plugin}
+\todoT{Base Plugin}
+
+
+\subsubsection{BaseTheme Plugin}
+\todoT{Basetheme Plugin}
+
+\subsubsection{RedTheme Plugin}
+
 \subsubsection{TabView Plugin}
 \source{AppHooksBegin}{AppHooksEnd}{Hook.tsx}
+\todoT{TabView Plugin}
 
+\subsubsection{SingleView Plugin}
+\todoT{SingleView Plugin}
 
 \subsubsection{Converter Plugin}
 \todoT{Converter Plugin}
@@ -105,8 +248,6 @@ type HookTypes = {
 \todoT{PTMConverter Plugin}
 \subsubsection{Renderer Plugin}
 \source{RendererHooksBegin}{RendererHooksEnd}{Hook.tsx}
-
-
 \todoT{Renderer Plugin}
 \todoT{Base Node}
 \todoT{WebGL texture packing}
@@ -114,6 +255,7 @@ type HookTypes = {
 \todoT{PTM Renderer Plugin}
 \todoT{Dynamic Shaders}
 \todoT{RGB vs LRGB}
+
 \subsubsection{Light Control Plugin}
 \todoT{Light Control Plugin}
 \subsubsection{Rotation Plugin}
