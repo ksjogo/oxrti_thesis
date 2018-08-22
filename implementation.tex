@@ -226,7 +226,9 @@ The increasing support of the WebGL stack is the main reason, why
   Shading Language\cite*{noauthor_webgl_nodate-4} and the the texture loader (\autoref{seq_textureloader}), no direct
   WebGL code is necessary nor used anywhere inside the implementation, as the
   gl-react library is abstracting it neatly for use from the MobX/React environment.
-\item[gl-react:] ``Implement complex effects by composing React
+
+  \subsubsection*{gl-react}
+ ``Implement complex effects by composing React
   components.''\cite*{renaudeau_gl-react_2018} is the main use of the gl-react
   library. A minimal component, adapted from the gl-react-cookbook looks
   like\cite*{renaudeau_gl-react_2018}:
@@ -350,7 +352,7 @@ plugins are the following:
 \item \emph{AppState.tsx}, the mobx-state-tree root node representing the whole
   application state in its leafs, detailed in~\autoref{sec_state}.
  \item \emph{BTFFile.tsx}, containing the fileformat implementation and utility
-   functions, described in~\autoref{sec_btf-file-format}.
+   functions, described in~\autoref{sec_btffile}.
 \item \emph{Hook.tsx} and \emph{HookManager.tsx} which provide the whole dynamic
   interaction system between the different plugins, shown
   in~\autoref{sec_hooks}.
@@ -378,13 +380,11 @@ plugins are the following:
   texture loading from in-memory BTF files, discussed in~\autoref{sec_textureloading}.
 \end{itemize}
 
-
-
-
-
-\input{fileformats}
+\subsection{BTF FIle}\label{sec_btffile}
+The full BTF file format extension can be found inside~\autoref{sec_fileformat}.
 
 \subsection{Texture Loader}\label{seq_textureloader}
+The bridge between the loaded BTF \emph{loaders/oxrtidatatex/}
 
 
 \subsection{State Management}\label{sec_state}

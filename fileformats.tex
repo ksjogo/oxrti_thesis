@@ -37,6 +37,9 @@ top), to keep aligned with the original PTM format and allow easier
 loading into WebGL.
 \end{itemize}
 
+In case of usage with the oxrti viewer, following files can be present in
+addition to those mentioned above:
+
 \hypertarget{manifest}{%
 \subsubsection{Manifest}\label{manifest}}
 
@@ -57,7 +60,7 @@ non-empty alphanumeric string uniquely identifying the BRDF/BSDF colour
 model used by the BTF file (see \protect\hyperlink{Options}{Options}
 section below). The \texttt{channels} element has an arbitrary amout of
 named \texttt{channel} entries, according to the \texttt{channel-model}.
-* Additionally the \texttt{data} element has one untyped entry named
+\item Additionally the \texttt{data} element has one untyped entry named
 \texttt{formatExtra}, where format implementation specific data can be
 stored.
 \item Each \texttt{channel} has an \texttt{coefficents} child
@@ -65,8 +68,8 @@ consisting of an arbitrary number of \texttt{coefficent} entries, as
 well as one \texttt{coefficient-model} attribute. The
 \texttt{coefficient-model} attribute has value a non-empty alphanumeric
 string uniquely identifying the BRDF/BSDF approximation model used by
-the BTF file (see \protect\hyperlink{Options}{Options} section below). *
-Each \texttt{coefficient} element has one attribute: \texttt{format}.
+the BTF file (see \protect\hyperlink{Options}{Options} section below).
+\item Each \texttt{coefficient} element has one attribute: \texttt{format}.
 The \texttt{format} attribute has value a non-empty alphanumeric string
 uniquely identifying the image file format used to store the channel
 values (see \protect\hyperlink{Options}{Options} section below).
@@ -96,8 +99,8 @@ At present, the following values are defined for attribute
 \begin{itemize}
 \item \texttt{RGB}: the
 3-channel RGB colour model, with channels named \texttt{R}, \texttt{G}
-and \texttt{B}. This colour model is currently under implementation. *
-\texttt{LRGB}: the 4-channel LRGB colour model, with channels named
+and \texttt{B}. This colour model is currently under implementation.
+\item \texttt{LRGB}: the 4-channel LRGB colour model, with channels named
 \texttt{L}, \texttt{R}, \texttt{G} and \texttt{B}. This colour model is
 currently under implementation.
 \item \texttt{SPECTRAL}: the spectral
@@ -131,8 +134,8 @@ hemispherical harmonic approximation model BRDFs. This approximation
 model is planned for future implementation.
 \item \texttt{BSDFpoly*}:
 order-\texttt{*} polynomial approximation model for BSDFs. This
-approximation model is planned for future implementation. *
-\texttt{BSDFharmonic*}: order-\texttt{*} spherical harmonic
+approximation model is planned for future implementation.
+\item \texttt{BSDFharmonic*}: order-\texttt{*} spherical harmonic
 approximation model for BSDFs. This approximation model is planned for
 future implementation.
 \end{itemize}
@@ -148,11 +151,11 @@ format is currently under implementation.
 \item \texttt{PNG*}: PNG file
 format encoding the specified bit-depth (8, 16, 24, 32, 48 or 64).
 Support for this format is currently under implementation. Different PNG
-colour options are used to support different bit-depths: *
-\texttt{Grayscale} with 8-bit/channel to encode 8-bit bit-depth. *
-\texttt{Grayscale} with 16-bit/channel to encode 16-bit bit-depth. *
-\texttt{Truecolor} with 8-bit/channel to encode 24-bit bit-depth. *
-\texttt{Truecolor\ and\ alpha} with 8-bit/channel to encode 32-bit
+colour options are used to support different bit-depths:
+\item \texttt{Grayscale} with 8-bit/channel to encode 8-bit bit-depth.
+\item \texttt{Grayscale} with 16-bit/channel to encode 16-bit bit-depth.
+\item \texttt{Truecolor} with 8-bit/channel to encode 24-bit bit-depth.
+\item \texttt{Truecolor\ and\ alpha} with 8-bit/channel to encode 32-bit
 bit-depth.
 \item \texttt{Truecolor} with 16-bit/channel to encode 48-bit
 bit-depth.
