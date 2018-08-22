@@ -3,7 +3,7 @@
 \newcommand{\para}[1]{\paragraph{#1}\mbox{}\\}
 
 
-\newcommand{\fig}[3]{\begin{figure}[H] \centering
+\newcommand{\fig}[3]{\begin{figure}[] \centering
     \includegraphics[max width=\textwidth]{images/#1}
     \caption[Mo#2]{#3\label{#1}}
   \end{figure}
@@ -47,11 +47,11 @@
   \renewcommand{\fcolorbox}[4][]{#4}
 %}
 
-\newminted[typescript]{TypeScript}{linenos,tabsize=4,breaklines}
+\newminted[typescript]{TypeScript}{linenos,tabsize=4,breaklines,autogobble}
 
 \newcommand{\sourceExplicit}[3]{%
 \immediate\write18{./cutter.sh #1 #2 #3}%
-\inputminted[linenos,tabsize=4,breaklines]{TypeScript}{minted.tmp}%
+\inputminted[linenos,tabsize=4,breaklines,autogobble]{TypeScript}{minted.tmp}%
 \immediate\write18{rm minted.tmp}%
 }%
 

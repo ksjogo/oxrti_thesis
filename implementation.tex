@@ -223,7 +223,7 @@ The increasing support of the WebGL stack is the main reason, why
   calculations should be done inside a single shader. It is also limiting the
   amount of layers of the Paint plugin, as these also consist of bound textures.
   Apart from the shaders, which are written in the OpenGL ES
-  Shading Language\cite*{noauthor_webgl_nodate-4} and the the texture loader (\autoref{seq_textureloader}), no direct
+  Shading Language\cite*{noauthor_webgl_nodate-4} and the the texture loader (\autoref{sec_textureloader}), no direct
   WebGL code is necessary nor used anywhere inside the implementation, as the
   gl-react library is abstracting it neatly for use from the MobX/React environment.
 
@@ -342,7 +342,7 @@ It would result in a display like~\autoref{zoomcomponent}.
 \end{description}
 
 
-\subsection{Overall Architecture}
+\subsection{Base}
 The implementation is making a distinction between plugin and non-plugin files.
 The amount of non-plugin files was aimed for to be as low as possible, as they
 are inflexible in all output configurations and will have slightly different
@@ -377,8 +377,50 @@ plugins are the following:
     './zoom.glsl'} statement and setting up Webpack to contain the shader source
   in the final bundle.
 \item \emph{loaders/oxrtidatatex/OxrtiDataTextureLoader.tsx} is providing direct
-  texture loading from in-memory BTF files, discussed in~\autoref{sec_textureloading}.
+  texture loading from in-memory BTF files, discussed in~\autoref{sec_textureloader}.
 \end{itemize}
+
+\subsection{Hooks}\label{sec_hooks}
+The hook system allows stable and prioritized interactions between the different
+plugins. All available hooks are declared inside the {Hook.tsx} file, which
+offers 3 different types of hooks:
+\sourceBE{Hook.tsx}
+These types are used to first declare single hook types (which will be discussed
+within the plugins consuming them) and then construct the whole hook
+configuration tree for all plugins:
+\begin{typescript}
+type HookTypes = {
+  ActionBar?: ConfigHook<ActionBar>,
+  AfterPluginLoads?: FunctionHook,
+  AppView?: ComponentHook,
+...
+}
+\end{typescript}
+A plugin then can link itself into these hooks with its hooks method, for
+example:
+\begin{typescript}
+get hooks () {
+  return {
+    // register things for the ViewerSide hook / add components to the side bar
+    ViewerSide: {
+      // a plugin can register itself multiple times with different names and configurations
+      Metadata: {
+        component: BTFMetadataConciseDisplay,
+        // hooks will be sorted internally in priority order, highest first
+        priority: -110,
+      },
+      Open: {
+        component: Upload,
+        priority: 100,
+      },
+    },
+  }
+}
+\end{typescript}
+The state manager (~\autoref{sec_state}) collects all hooks and merges them into
+the respective HookManagers, which are then used to iterate/map over these:
+\descBE{HookManager}
+
 
 \subsection{BTF FIle}\label{sec_btffile}
 The full standalone BTF file format specification can be found inside~\autoref{sec_fileformat}.
@@ -391,7 +433,50 @@ plugin to fill the BTF with their respective data. This hook is called by the
 AppState though, as the BTFFile implementation is fully standalone (apart from
 the jszip dependency), in case other software wishes to re-use the implementation.
 
-\subsection{Texture Loader}\label{seq_textureloader}
+
+\subsection{State Management}\label{sec_state}
+The \emph{AppState.tsx} file is the root of the applications state tree, but
+itself only contains limited data:
+\source{beginData}{endData}{AppState.tsx}
+Its main function is to load all plugins and then let them share data between
+each other via the hook system. The set of to be loaded plugins is defined inside
+\emph{oxrti.plugins.json}, the plugins defined there will be loaded in order.
+The state tree after inital plugin load is shown in~\autoref{statetree}.
+As only \code{@action}s can modify the state, it is easy to follow the changing
+app state, as shown in~\autoref{mobxactions}.
+\fig{mobxactions}{MobX actions}{Run MobX at application startup and after one
+  click on `Add Bookmark'. The differential of that action is on the right.}
+\fig{statetree}{MobX state tree}{State tree after inital application load. All
+  plugins are initialized and their hooks are registered. Visualized with redux
+  dev tools.\cite*{noauthor_redux_nodate}}
+
+\subsection{Renderer Stack}\label{sec_rendererstack}
+Even though the renderer stack is fully contained in the plugins, its principles
+span most of them, thus an overview is in order. All WebGL rendering is done
+through the gl-react library. If a plugin wants to register a node inside the
+stack, it is using the hook system, e.g.\ the Rotation plugin:
+\source{beginRotationHooks}{endRotationHooks}{Plugins/RotationPlugin/RotationPlugin.tsx}
+The registered nodes are components again, which will link them into the
+automated mobx reactions, for example the Centerer node:
+\source{beginCenterer}{endCenterer}{Plugins/RotationPlugin/RotationPlugin.tsx}
+For the currently delivered default configuration the following nodes are
+registered:
+\begin{enumerate}
+\item PaintNode
+\item CentererNode
+\item RotationNode
+\item ZoomNode
+\end{enumerate}
+The Renderer plugin will start by picking the proper base rendering node
+depending on the channel format of the currently loaded BTF file (btf inside the
+code):
+\source{beingPicker}{endPicker}{Plugins/RendererPlugin/RendererPlugin.tsx}
+This inital node will then be wrapped by the registered nodes:
+\source{beingWrapper}{endWrapper}{Plugins/RendererPlugin/RendererPlugin.tsx}
+
+
+
+\subsection{Texture Loader}\label{sec_textureloader}
 The bridge between the loaded BTF files and the WebGL contexts needs to be
 closed with custom code, as gl-react was not supporting the load of PNG textures
 from memory. An abridged version of the code follows, as it is a good example of
@@ -431,7 +516,7 @@ loadTexture(config: TexForRender) {
                 case 'PNG8':
                     type = gl.LUMINANCE
                     break
-                // ...
+x                // ...
                 case 'PNG32':
                     type = gl.RGBA
                     break
@@ -452,39 +537,6 @@ loadTexture(config: TexForRender) {
         })
    // the calling code will have its own catch/then logic
    return promise
-}
-\end{typescript}
-
-
-\subsection{State Management}\label{sec_state}
-\todoT{state management}
-\todoT{state import/export}
-\todoD{redux}
-\todoD{mobx actions}
-
-
-\subsection{Renderer Stack}\label{sec_rendererstack}
-\todoT{base rendering nodes}
-\todoD{stacked components}
-\todoD{effects}
-\subsubsection{Texture Loading}\label{sec_textureloading}
-\todoT{Texture Loading}
-
-
-\subsection{Hooks}\label{sec_hooks}
-The hook system allows stable and prioritized interactions between the different
-plugins. All available hooks are declared inside the {Hook.tsx} file, which
-offers 3 different types of hooks:
-\sourceBE{Hook.tsx}
-These types are used to first declare single hook types (which will be discussed
-within the plugins consuming them) and then construct the whole hook
-configuration tree for all plugins:
-\begin{typescript}
-type HookTypes = {
-  ActionBar?: ConfigHook<ActionBar>,
-  AfterPluginLoads?: FunctionHook,
-  AppView?: ComponentHook,
-...
 }
 \end{typescript}
 
