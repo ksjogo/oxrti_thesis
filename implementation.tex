@@ -20,8 +20,8 @@ be immediately available there and the current compiled software version is
 always fed automatically from it into the hosted version at \url{https://oxrtimaster.azurewebsites.net/api/azurestatic}.
 
 \subsection{Libraries}
-\begin{description}
-\item[TypeScript:]  The official header line of TypeScript show some points why
+\subsubsection*{TypeScript}
+ The official header line of TypeScript show some points why
   it was picked for this project: ``TypeScript is a typed superset of JavaScript that compiles
   to plain JavaScript. Any browser. Any host. Any OS\@. Open
   source.''\cite{noauthor_typescript_2018} Which fits
@@ -50,8 +50,8 @@ Classes\cite*{noauthor_classes_nodate},
 Decorators\cite*{noauthor_decorators_nodate} and
 Generics\cite*{noauthor_generics_nodate}, which will be discussed at their first
 appearance inside the code samples.
-
-\item[React:] The two main points on React's official website are
+\subsubsection*{React}
+The two main points on React's official website are
   ``Declarative'' and ``Component Based''\cite*{noauthor_react_nodate}, which
   is best shown by an extended example from their website, which exemplifies
   multiple patterns found through the oxrti implementation. The most important
@@ -126,7 +126,8 @@ This component could then be used by:
 \end{typescript}
 This component systems allows the plugins to define some components and then
 `link' them into the program via the hook system, which will be explored later.
-\item[mobx:] Its main tagline is ``Simple, scalable state
+\subsubsection*{MobX}
+Its main tagline is ``Simple, scalable state
   management''\cite*{noauthor_mobx:_2018}. An introducing overview is shown
   in~\autoref{mobxflow}. Broadly speaking MobX introduces observable objects.
   Instead of mentioned DOM handling or property passing inside React trees,
@@ -141,7 +142,8 @@ This component systems allows the plugins to define some components and then
   the state. The state is mostly encapsulated on a plugin basis with usage of
   the mobx-state-tree library, which also encapsulates most computed values.
   Reactions are most often the previously discussed React components.}
-\item[mobx-state-tree:] ``Central in MST (mobx-state-tree) is the concept of a
+\subsubsection*{mobx-state-tree}
+``Central in MST (mobx-state-tree) is the concept of a
   living tree. The tree consists of mutable, but strictly protected
   objects''\cite*{noauthor_mobx-state-tree:_2018} This allows the implementation
   to have one shared state tree which can be used to safely access all data. All
@@ -169,7 +171,8 @@ const Store = types.model("Store", {
 This syntax was deemed to convoluted, as it is a lot more complex than standard
 JavaScript/TypeScript classes, which were introduced by the ES6 version, as shown in the React description above and
 thus being in conflict with requirement~\ref{req_easy}.
-\item[classy-mst:] There is an option to use a more traditional syntax instead
+\subsubsection*{classy-mst}
+There is an option to use a more traditional syntax instead
   though, with the classy-mst library, with
   which the example above becomes\cite*{noauthor_classy-mst:_2018}:
 \begin{typescript}
@@ -196,48 +199,207 @@ const Todo = mst(TodoCode, TodoData, 'Todo');
 The \code{@action} is a decorator, enabling the following method to change the
 state/properties of the model, as MST prohibits that by default. Reactions/View
 updates will only happen after the outermost action finished executing.
-\item[WebGL:] The increasing support of the WebGL stack is the main reason, why
+\subsubsection*{WebGL}
+The increasing support of the WebGL stack is the main reason, why
   it is now feasible to implement a full RTI software stack with plain web
   technologies, as it ``enables web content to use an API based on OpenGL ES 2.0
   to perform 3D rendering in an HTML \code{<canvas>} in browsers that support it
-  without the use of plug-ins."\cite*{noauthor_webgl_nodate-1}
+  without the use of plug-ins."\cite*{noauthor_webgl_nodate-1} OpenGL ES 2.0
+  likeness means that (most importantly) shaders are supported, allowing the
+  implementation to be split up into multiple shaders with single
+  responsibilities, for details refer to~\autoref{sec_rendererstack}. While preserving compatibility and
+  requirement~\ref{req_system} WebGL 2 support is sadly not widespread enough to fully rely on yet
+  (compare~\autoref{webglcomp}), as it is currently estimated at 50\% of all devices\cite*{noauthor_webgl_nodate-2}.
   \fig{webglcomp}{WebGL compability}{WebGL compability as from the Mozilla
-    Developer network\cite*{noauthor_webgl_nodate}.}
+    Developer network\cite*{noauthor_webgl_nodate}.}  Potential improvements
+  when WebGL 2 is more widely supported or in conditional plugins are discussed
+  in~\autoref{sec_futureGL}. One notable limitation of WebGL is
+  \code{MAX_TEXTURE_IMAGE_UNITS}, the maximum amount of bound textures inside a
+  single shader, which in most implementations is
+  16\cite*{noauthor_webgl_nodate-3}, whereas the standard OpenGL implementations
+  are likely to have a limit of 32. This is influencing the BTF file format, as
+  for example in the PTM RGB use case a total of 18 coefficients exist, which
+  now need to be bundled up somehow into maximum 16 textures, if the
+  calculations should be done inside a single shader. It is also limiting the
+  amount of layers of the Paint plugin, as these also consist of bound textures.
+  Apart from the shaders, which are written in the OpenGL ES
+  Shading Language\cite*{noauthor_webgl_nodate-4} and the the texture loader (\autoref{seq_textureloader}), no direct
+  WebGL code is necessary nor used anywhere inside the implementation, as the
+  gl-react library is abstracting it neatly for use from the MobX/React environment.
+\item[gl-react:] ``Implement complex effects by composing React
+  components.''\cite*{renaudeau_gl-react_2018} is the main use of the gl-react
+  library. A minimal component, adapted from the gl-react-cookbook looks
+  like\cite*{renaudeau_gl-react_2018}:
+\begin{typescript}
+const shaders = Shaders.create({
+  helloGL: {
+    frag: GLSL`
+     precision highp float;
+     varying vec2 uv;
+     void main() {
+      gl_FragColor = vec4(uv.x, uv.y, 0.5, 1.0);
+   }`
+ }
+});
 
-  \todoT{gl-react}
-\item[gl-react:]\todoT{gl-react}
-\item[webpack:]\todoT{webpack}\cite{renaudeau_gl-react_2018}
-\item[electron:]\todoT{electron}
-\item[misc:]\todoT{misc}\cite{noauthor_mobx:_2018}
+export default class Example extends Component {
+  render() {
+    return (
+      <Surface width={300} height={300}>
+        <Node shader={shaders.helloGL} />
+      </Surface>
+    );
+  }
+}
+\end{typescript}
+  Which would result in a display like~\autoref{glreactcookbook}.
+  \fig{glreactcookbook}{gl-react-cookbook example}{RGBA texture, with R and G
+    according to their respective u or v texture coordinate. From
+    \cite*{noauthor_gl-react_nodate}.} gl-react's is not a 3D engine, so no
+  objects are to be created or scene graph managed, instead the oxrti
+  implementation can concentrate on solely providing the necessary shaders.\
+  gl-react's default node size is taken from the parent surface size. The
+  surface size will be dependent on the user running the program and his browser
+  windows, which makes it undesirable as details would be lost, if the BTF
+  provided more detail, so the processing Node sizes are usually set to the BTF
+  resolution or higher.
+  \subsubsection*{Webpack}
+  Webpack is used to bundle the implementation into single files as it is ``a bundler for javascript and friends. Packs many modules into a few bundled
+  assets.''\cite*{noauthor_webpack/webpack:_nodate} A more detailed discussion
+  on the targets is in~\autoref{sec_apps}. Broadly speaking Webpack loads the
+  source code inside the \emph{src} directory according to the loaders defined
+  inside the \emph{webpack.config.js} file, analyses their dependencies and then
+  bundles them together. This makes it possible to have a dependency tree
+  spanning 26184 packages from npm, but still providing a single bundled
+  application file only 1.5 megabyte large (data as of \today). It also allows
+  the dynamic plugin structure by bundling the plugins into a dynamic `context' from
+  which single plugins can be loaded at runtime.
+  \subsubsection*{Electron}
+  Electron is used to ``build cross-platform desktop apps with JavaScript, HTML,
+  and CSS''\cite*{noauthor_electron:_2018} While theoretically not necessary to
+  fulfill most requirements, as the implementation is compatible with all modern
+  web browsers, providing an additional standalone executable provides some advantages:
+  \begin{itemize}
+\item It is possible to add a more traditional menu-based interface, which the
+  browser version could not support.
+  \item Stable development environment, as electron-devtools-installer is used
+    to provide relevant extensions (React devtools, MobX devtools) by default
+    and the hot reloading is reliably tested, which together form a good
+    developer experience (requirement~\ref{req_dx})
+  \item It allows to preserve the software in a usable, contained state, not
+    relying on the user also having a compatible web browser in the future.
+\item It allows future development to more directly access resources of the host
+  machine, e.g.\ the normal OpenGL stack could be used for calculating the
+  coefficients, as it is less resource constrained compared to the WebGL stack.
+  \end{itemize}
+  \subsubsection*{MaterialUI}
+  MaterialUI is succinctly described by ``React components that implement
+  Google's Material Design.''\cite*{noauthor_material-ui:_2018}. MaterialUI's
+  component are used throughout the app for styling the components, making the
+  use of custom CSS largely unnecessary apart from minor positioning fixes. For
+  example the Zoom component is defined as:
+\begin{typescript}
+// Card, CardContent, Tooltip and Button are all components provided by MaterialUI.
+// this refers to the Zoom Plugin's controller which
+// the content will be automatically refreshed if the refered values change
+const Zoom = Component(function ZoomSlider (props) {
+    return <Card style={{ width: '100%' }} >
+        <CardContent>
+            <Tooltip title='Reset'>
+                <Button onClick={this.resetZoom} style={{ marginLeft: '-8px' }}>Zoom</Button>
+            </Tooltip>
+            <Tooltip title={this.scale}>
+                <Slider value={this.scale} onChange={this.onSlider} min={0.01} max={30} />
+            </Tooltip>
+            <Tooltip title='Reset'>
+                <Button onClick={this.resetPan} style={{ marginLeft: '-11px' }}>Pan</Button>
+            </Tooltip>
+            <Tooltip title={this.panX}>
+                <Slider value={this.panX} onChange={this.onSliderX} min={-1 * this.scale} max={1 * this.scale} />
+            </Tooltip>
+            <Tooltip title={this.panY}>
+                <Slider value={this.panY} onChange={this.onSliderY} min={-1 * this.scale} max={1 * this.scale} />
+            </Tooltip>
+        </CardContent>
+    </Card>
+})
+\end{typescript}
+It would result in a display like~\autoref{zoomcomponent}.
+\fig{zoomcomponent}{Zoom Component}{Zoom Component, the user is dragging the
+  zoom slider currently, the mouse pointer is not depicted.}
+ \subsubsection*{Misc}
+ Further libraries of note are:
+\begin{description}
+\item[electron-webpack\cite*{noauthor_electron-userland/electron-webpack:_nodate}] is providing the bridging between Webpack and
+   Electron, its config is expanded by the \emph{webpack.renderer.additions.js}
+   and \emph{webpack.renderer.shared.js} files.
+\item[pngjs\cite*{stolwijk_pngjs:_2018}] is providing in-browser bitwise png
+  manipulation, required in the converter.
+\item[jszip\cite*{noauthor_jszip_nodate}] is providing in-browser zip file
+    manipulations, which are fundamental for the BTF fileformat.
 \end{description}
 
-\subsection{Plugin architectures}
-\todoT{Plugin architectures}
 
-\begin{typescript}
-  function murks() : number{}
-\end{typescript}
+\subsection{Overall Architecture}
+The implementation is making a distinction between plugin and non-plugin files.
+The amount of non-plugin files was aimed for to be as low as possible, as they
+are inflexible in all output configurations and will have slightly different
+behaviour while developing in regard to reloads. The files not contained in
+plugins are the following:
+\begin{itemize}
+\item \emph{AppState.tsx}, the mobx-state-tree root node representing the whole
+  application state in its leafs, detailed in~\autoref{sec_state}.
+ \item \emph{BTFFile.tsx}, containing the fileformat implementation and utility
+   functions, described in~\autoref{sec_btf-file-format}.
+\item \emph{Hook.tsx} and \emph{HookManager.tsx} which provide the whole dynamic
+  interaction system between the different plugins, shown
+  in~\autoref{sec_hooks}.
+\item \emph{Loader.tsx}, \emph{electron/index.tsx}, \emph{renderer/index.tsx}
+  and \emph{web/index.tsx}, providing the loading functionality. The Electron
+  application has two entry points, one for the main process, which is
+  \emph{electron/index.tsx} and one for the in-browser content, which is
+  \emph{renderer/index.tsx}. The in-browser one and the plain browser entry point
+  \emph{web/index.tsx} both call the \emph{Loader.tsx} to initialise the state
+  management and mount the root React component, so the user can interact
+  finally. The Loader also handles hot-reloading, it will receive the changed
+  source code from Webpack and update the plugins accordingly.
+ \item \emph{Plugin.tsx} defining the base class for a plugins, further
+   explained in~\autoref{sec_plugins}.
+\item \emph{types.d.ts} is providing the custom ambient type declarations for
+  software dependencies, which are not providing TypeScript types on their own.
+  In case new dependencies are added, they are likely to require and addition there.
+\item \emph{Util.tsx} providing general helper functions, largely related to
+  some math functions for texture coordinate handling.
+\item \emph{loaders/glslify-loader/index.js} is the custom Webpack loader for
+  \emph{.glsl} files, allowing e.g.\ the \code{import zoomShader from
+    './zoom.glsl'} statement and setting up Webpack to contain the shader source
+  in the final bundle.
+\item \emph{loaders/oxrtidatatex/OxrtiDataTextureLoader.tsx} is providing direct
+  texture loading from in-memory BTF files, discussed in~\autoref{sec_textureloading}.
+\end{itemize}
+
+
+
 
 
 \input{fileformats}
 
-\subsection{Loader}
+\subsection{Texture Loader}\label{seq_textureloader}
 
 
-\subsection{State Management}
+\subsection{State Management}\label{sec_state}
 \todoT{state management}
 \todoT{state import/export}
 \todoD{redux}
 \todoD{mobx actions}
 
-\subsection{Components}
-\todoT{single component units}
 
-\subsection{Renderer Stack}
+\subsection{Renderer Stack}\label{sec_rendererstack}
 \todoT{base rendering nodes}
 \todoD{stacked components}
 \todoD{effects}
-\subsubsection{Texture Loading}
+\subsubsection{Texture Loading}\label{sec_textureloading}
+\todoT{Texture Loading}
 
 
 \subsection{Hooks}\label{sec_hooks}
@@ -258,7 +420,7 @@ type HookTypes = {
 \end{typescript}
 
 
-\subsection{Plugins}
+\subsection{Plugins}\label{sec_plugins}
 \todoT{Plugins API}
 
 \subsubsection{Base Plugin}
@@ -304,7 +466,7 @@ type HookTypes = {
 \subsubsection{Import Export Plugin }
 \todoT{Automatic Import Export}
 
-\subsection{Applications}
+\subsection{Applications}\label{sec_apps}
 \todoT{Other related graphics}
 \todoT{Applications}
 \subsubsection{Standalone Website}
