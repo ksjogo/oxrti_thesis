@@ -1,5 +1,5 @@
 \hypertarget{btf-file-format}{%
-\subsection{BTF File Format}\label{sec_btf-file-format}}
+\section{BTF File Format}\label{sec_btf-file-format}}
 
 This section describes the BTF file format. The aim of this file format
 is to provide a generic container for BTF data to be specified using a
@@ -7,7 +7,7 @@ variety of common formats. Files shall have the \texttt{.btf.zip}
 extension.
 
 \hypertarget{file-structure}{%
-\subsubsection{File Structure}\label{file-structure}}
+\subsection{File Structure}\label{file-structure}}
 
 A BTF file is a ZIP file containing the following:
 \begin{itemize}
@@ -41,7 +41,7 @@ In case of usage with the oxrti viewer, following files can be present in
 addition to those mentioned above:
 
 \hypertarget{manifest}{%
-\subsubsection{Manifest}\label{manifest}}
+\subsection{Manifest}\label{manifest}}
 
 The manifest for the BTF file format is a JSON file with root
 dictionary. The \texttt{root} element has two mandatory child elements:
@@ -76,7 +76,7 @@ values (see \protect\hyperlink{Options}{Options} section below).
 \end{itemize}
 
 \hypertarget{textures}{%
-\subsubsection{Textures}\label{textures}}
+\subsection{Textures}\label{textures}}
 
 Each image file \texttt{/data/CHAN/COEFF.EXT} has the same dimensions
 specified by the \texttt{width} and \texttt{height} attributes of the
@@ -92,7 +92,7 @@ values of the attribute \texttt{model} for element \texttt{channels}
 \texttt{coefficients} (approximation model).
 
 \hypertarget{options}{%
-\subsubsection{Options}\label{options}}
+\subsection{Options}\label{options}}
 
 At present, the following values are defined for attribute
 \texttt{channel-model} of element \texttt{channels}.

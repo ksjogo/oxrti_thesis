@@ -474,8 +474,6 @@ code):
 This inital node will then be wrapped by the registered nodes:
 \source{beingWrapper}{endWrapper}{Plugins/RendererPlugin/RendererPlugin.tsx}
 
-
-
 \subsection{Texture Loader}\label{sec_textureloader}
 The bridge between the loaded BTF files and the WebGL contexts needs to be
 closed with custom code, as gl-react was not supporting the load of PNG textures
@@ -540,9 +538,17 @@ x                // ...
 }
 \end{typescript}
 
-
 \subsection{Plugins}\label{sec_plugins}
-\todoT{Plugins API}
+All plugins extend the relatively limited abstract plugin class in
+\emph{Plugin.tsx} and have no preserved state:
+\descBE{Plugin}
+The most important function is the \code{PluginCreator}, which merges the
+mobx-state-tree model with the classy-mst controller code and provides a wrapper
+function to create components bound to the containing plugin:
+\source{beginCreator}{endCreator}{Plugin.tsx}
+A minimal example would be the:
+\sourceBE{Plugins/BasePlugin/BasePlugin.tsx}
+
 
 \subsubsection{Base Plugin}
 \todoT{Base Plugin}
