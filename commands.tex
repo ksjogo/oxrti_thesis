@@ -63,4 +63,13 @@
   \sourceExplicit{#1}{#2}{../oxrti/src/#3}%
 }%
 
+
+\newcommand{\descBE}[1]{%
+  \sourceExplicit{begin}{end}{../oxrti/dist/src/#1.d.ts}%
+}%
+
+\newcommand{\desc}[3]{%
+  \sourceExplicit{#1}{#2}{../oxrti/dist/src/#3.d.ts}%
+}%
+
 \newcommand{\code}[1]{\mintinline{c}{#1}}

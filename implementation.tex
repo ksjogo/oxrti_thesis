@@ -381,10 +381,79 @@ plugins are the following:
 \end{itemize}
 
 \subsection{BTF FIle}\label{sec_btffile}
-The full BTF file format extension can be found inside~\autoref{sec_fileformat}.
+The full standalone BTF file format specification can be found inside~\autoref{sec_fileformat}.
+The implementation in \emph{BTFFile.tsx} is an in-memory implementation of that
+file with following interface, it is mainly a `dumb' data container.
+\desc{beginBTF}{endBTF}{BTFFile}
+Notable is the \code{PreDownload} hook which is called before the
+\code{generateZip} function is called, to allow the ImpExp plugin and the Paint
+plugin to fill the BTF with their respective data. This hook is called by the
+AppState though, as the BTFFile implementation is fully standalone (apart from
+the jszip dependency), in case other software wishes to re-use the implementation.
 
 \subsection{Texture Loader}\label{seq_textureloader}
-The bridge between the loaded BTF \emph{loaders/oxrtidatatex/}
+The bridge between the loaded BTF files and the WebGL contexts needs to be
+closed with custom code, as gl-react was not supporting the load of PNG textures
+from memory. An abridged version of the code follows, as it is a good example of
+the Promise pattern used in some following parts.
+\begin{typescript}
+loadTexture(config: TexForRender) {
+    // keep track of the amount of currently loading textures
+    appState.textureIsLoading()
+    // shortcut for the WebGL reference
+    let gl = this.gl
+    // access the raw data buffer from the texture config
+    let data = config.data
+    // create a Promise
+    // it is basically chaining callbacks together
+    // and then asynchronously executing each step
+    let promise =
+        // first create an ImageBitmap object
+        // we need to flipY as the textures are orientated naturally inside the BTF file
+        // but WebGL is expecting them bottom row first
+        createImageBitmap(data, { imageOrientation: 'flipY' })
+        // the catch step is called if the previous part failed
+        .catch((reason) => {
+            // some browers do not like loading a lot of big textures parrelly
+            // and will garbage collect them in between and thus fail
+            // as a fallback the limiter function is used to limit concurrency of that part to 1
+            // this still allow max currency for other environments
+            return limiter(() => createImageBitmap(data))
+        })
+        // the then part is called when the previous step succedded
+        .then(img => {
+            // create and bind a new WebGL texture
+            let texture = gl.createTexture()
+            gl.bindTexture(gl.TEXTURE_2D, texture)
+            let type: number
+            // map the type from the BTF file to a WebGL texture type
+            switch (config.format) {
+                case 'PNG8':
+                    type = gl.LUMINANCE
+                    break
+                // ...
+                case 'PNG32':
+                    type = gl.RGBA
+                    break
+            }
+            // load the imageBitmap into the texture
+            gl.texImage2D(gl.TEXTURE_2D, 0, type, type, gl.UNSIGNED_BYTE, img)
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+            // finished and return
+            appState.textureLoaded()
+            return { texture, width: img.width, height: img.height }
+        })
+        .catch((reason) => {
+            // a null texture will be empty
+            alert('Texture failed to load' + reason)
+            appState.textureLoaded()
+            return { texture: null, width: config.width, height: config.height }
+        })
+   // the calling code will have its own catch/then logic
+   return promise
+}
+\end{typescript}
 
 
 \subsection{State Management}\label{sec_state}
