@@ -546,25 +546,56 @@ The most important function is the \code{PluginCreator}, which merges the
 mobx-state-tree model with the classy-mst controller code and provides a wrapper
 function to create components bound to the containing plugin:
 \source{beginCreator}{endCreator}{Plugin.tsx}
-A minimal example would be the:
+A minimal example would be:
 \sourceBE{Plugins/BasePlugin/BasePlugin.tsx}
-
+The rest of the plugins are presented on a higher conceptual level, as their
+internal APIs are most times used only be themselves. Their hooks will be
+discussed though.
 
 \subsubsection{Base Plugin}
-\todoT{Base Plugin}
+The base plugin is containing no further internal logic, but only is providing
+some shared display components. These could theoretically have been implemented
+outside of any plugin, but putting them into the Base plugin simplifies the
+distinction between components bound to plugins and unbound plugins, by having
+no unbound plugins at all. It also simplifies the code loading, as just the Base
+plugin can be (re-)loaded like all other plugins. The provided components are:
+\begin{itemize}
+\item JSONDisplay, showing a JSON object in a prettified for, used for
+  displaying different metadata objects
+\item BTFMetadataDisplay, showing the currently loaded BTF's data
+\item RenderHooks, to render all components attached to a hook
+\item SafeGLIInspector, wrapping the secondary WebGL surfaces and disabling
+    theme, if WebGL debug tools are used, which can handle only one surface.
+\item Tooltip, wrapping the material-ui tooltip component to fix styling errors
+\end{itemize}
 
-
-\subsubsection{BaseTheme Plugin}
-\todoT{Basetheme Plugin}
-
-\subsubsection{RedTheme Plugin}
+\subsubsection{BaseTheme, RedTheme and BlueTheme Plugin}
+The BaseTheme plugin is having two essential properties:
+\sourceBE{Plugins/BaseThemePlugin/BaseThemePlugin.tsx}
+Concrete themes (at the moment RedTheme and BlueTheme plugins) extend this
+BaseTheme and then set their \code{themeExtension} according to their
+modifications. To pick a theme to be used the ThemeConfig hook exists:
+\source{ThemeHooksBegin}{ThemeHooksEnd}{Hook.tsx}
+Concrete themes register with:
+\sourceBE{Plugins/RedThemePlugin/RedThemePlugin.tsx}
+If multiple plugins are registering themes, the appState will pick the theme
+with the highest priority to apply to the app.
 
 \subsubsection{TabView Plugin}
+The TabView plugin is providing the full app experience and is targeted at the
+Electron output and the online hosted version. As a tabbed container will
+occasionally delete the content of non-active tabs, some hooks are needed to
+ensure graceful behaviour of all displayed tabs:
 \source{AppHooksBegin}{AppHooksEnd}{Hook.tsx}
-\todoT{TabView Plugin}
+This view is depicted in~\autoref{tabview}.
+\fig{tabview}{Viewer with TabView}{Viewer with loaded TabView and RedTheme
+  plugins. Tabbar on top, with action buttons on top right.}
 
 \subsubsection{SingleView Plugin}
-\todoT{SingleView Plugin}
+The SingleView plugin is aimed to provide a contained viewer experience, e.g.\ on
+a museum's website, it is just displaying the tab with the highest priority, see~\autoref{singleview}.
+\fig{singleview}{Viewer with SingleView}{Viewer with loaded SingleView and BlueTheme
+  plugins. Only changes to~\autoref{tabview} are two lines in \emph{oxrti.plugins.json}.}
 
 \subsubsection{Converter Plugin}
 \todoT{Converter Plugin}
