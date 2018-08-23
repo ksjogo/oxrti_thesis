@@ -1,39 +1,41 @@
 \section{Implementation}
 
 \subsection{Overview}
-This section explains the current implementation of the developed tool set, it
-is primarily targeted to fulfill the dissertation's requirements. But is also
-aiming to be helpful for users wanting to understand the underlying systems and
-prepare them for potentially joining the development effort. Abridged code
-extracts are used as of their state for thesis submission, while the main
-principles will hold, later readers are asked to please consult the actual
-source code if any discrepancies arise or reexport the document. First the main libraries are shortly
-explained in their relevance to the program, second the largely abstract plugin
-architecture is shown, third the main plugins are presented and last the
+Since this section explains the current implementation of the developed tool set, it
+not only aims to fulfill the dissertation's requirements, but also to help users
+who want to understand the underlying systems and
+prepare them for potentially joining the development effort. Although abridged code
+extracts are of their current state for thesis submission, and the main
+principles will remain, nevertheless future readers are welcome to consult the actual
+source code if any discrepancies arise or reexport the document.
+
+Firstly  the main libraries are briefly explained where they are relevant to the
+program. Secondly, the mostly abstract plugin architecture is shown. Thirdly the main plugins are presented and last the
 delivery processes to the end users are described.
 
 
 All implementation files are contained and delivered inside a single git
 repository, which is freely available online:
-\url{https://github.com/ksjogo/oxrti}. All following file paths are relative to that repository's root. All future development will
+\url{https://github.com/ksjogo/oxrti}.
+All following file paths are relative to that repository's root. All future development will
 be immediately available there and the current compiled software version is
 always fed automatically from it into the hosted version at \url{https://oxrtimaster.azurewebsites.net/api/azurestatic}.
 
 \subsection{Libraries}
 \subsubsection*{TypeScript}
- The official header line of TypeScript show some points why
+ The official header line of TypeScript gives reasons why
   it was picked for this project: ``TypeScript is a typed superset of JavaScript that compiles
   to plain JavaScript. Any browser. Any host. Any OS\@. Open
   source.''\cite{noauthor_typescript_2018} Which fits
   requirements~\ref{req_os},~\ref{req_system}. Whereas plain JavaScript would
   have allowed slightly easier initial on-boarding and maybe easier immediate
-  code `hacks', TypeScript will provide better stability in the long run and a
+  code `hacks', TypeScript will provide better stability in the long term and a
   quite improved developer experience (requirement~\ref{req_dx}) in the long
   run. With the full typed hook system (compare \autoref{sec_hooks}) it ensures
   that a compiled plugin will not have runtime type problems, reducing the
   amount of switching between code editor and the running software. The whole
-  project is setup in a way to fully embrace editor tooling, Visual Studio
-  Code\cite *{noauthor_visual_nodate} and Emacs\cite*{noauthor_gnu_nodate} are
+  project is set up in a way to fully embrace editor tooling. Visual Studio
+  Code\cite*{noauthor_visual_nodate} and Emacs\cite*{noauthor_gnu_nodate} are
   the `officially' tested editors of the project. Code is recommended as it will
   support all developer features out of the box. The installation of the
   tslint\cite*{noauthor_tslint_nodate} plugin\cite*{noauthor_tslint_nodate-1} is
@@ -65,7 +67,7 @@ require developers to manually keep track of all data cross-references (e.g.\
 the pan values having to automatically adapt to the current zoom level). A
 declarative approach instead allows much better and easier implemented
 reactiveness and better performance (requirements~\ref{req_performance}
-and~\ref{req_react}) as the necessary changes can be track and components be
+and~\ref{req_react}) as the necessary changes can be tracked and components can be
 updated selectively.
 
 \begin{typescript}
@@ -78,7 +80,7 @@ class Timer extends React.Component {
   }
 
   tick() {
-    //  the state is updated and the component is automatically rerendered
+    //  the state is updated and the component is automatically re-rendered
     this.setState(prevState => ({
       seconds: prevState.seconds + 1
     }));
@@ -128,9 +130,9 @@ This component systems allows the plugins to define some components and then
 `link' them into the program via the hook system, which will be explored later.
 \subsubsection*{MobX}
 Its main tagline is ``Simple, scalable state
-  management''\cite*{noauthor_mobx:_2018}. An introducing overview is shown
+  management''\cite*{noauthor_mobx:_2018}. An introductory overview is shown
   in~\autoref{mobxflow}. Broadly speaking MobX introduces observable objects.
-  Instead of mentioned DOM handling or property passing inside React trees,
+  Instead of the aforementioned DOM handling or property passing inside React trees,
   components can just retrieve their values from the observable objects and will
   be automatically refreshed if the read values change. This for example makes
   the implementation of the QuickPan plugin extremely easy, as it can just read
@@ -200,14 +202,14 @@ The \code{@action} is a decorator, enabling the following method to change the
 state/properties of the model, as MST prohibits that by default. Reactions/View
 updates will only happen after the outermost action finished executing.
 \subsubsection*{WebGL}
-The increasing support of the WebGL stack is the main reason, why
+The increasing support of the WebGL stack is the main reason why
   it is now feasible to implement a full RTI software stack with plain web
   technologies, as it ``enables web content to use an API based on OpenGL ES 2.0
   to perform 3D rendering in an HTML \code{<canvas>} in browsers that support it
   without the use of plug-ins."\cite*{noauthor_webgl_nodate-1} OpenGL ES 2.0
   likeness means that (most importantly) shaders are supported, allowing the
   implementation to be split up into multiple shaders with single
-  responsibilities, for details refer to~\autoref{sec_rendererstack}. While preserving compatibility and
+  responsibilities. For details refer to~\autoref{sec_rendererstack}. While preserving compatibility and
   requirement~\ref{req_system} WebGL 2 support is sadly not widespread enough to fully rely on yet
   (compare~\autoref{webglcomp}), as it is currently estimated at 50\% of all devices\cite*{noauthor_webgl_nodate-2}.
   \fig{webglcomp}{WebGL compability}{WebGL compability as from the Mozilla
@@ -280,7 +282,7 @@ export default class Example extends Component {
   Electron is used to ``build cross-platform desktop apps with JavaScript, HTML,
   and CSS''\cite*{noauthor_electron:_2018} While theoretically not necessary to
   fulfill most requirements, as the implementation is compatible with all modern
-  web browsers, providing an additional standalone executable provides some advantages:
+  web browsers, an additional standalone executable provides some advantages:
   \begin{itemize}
 \item It is possible to add a more traditional menu-based interface, which the
   browser version could not support.
@@ -422,7 +424,7 @@ the respective HookManagers, which are then used to iterate/map over these:
 \descBE{HookManager}
 
 
-\subsection{BTF FIle}\label{sec_btffile}
+\subsection{BTF File}\label{sec_btffile}
 The full standalone BTF file format specification can be found inside~\autoref{sec_fileformat}.
 The implementation in \emph{BTFFile.tsx} is an in-memory implementation of that
 file with following interface, it is mainly a `dumb' data container.
@@ -439,7 +441,7 @@ The \emph{AppState.tsx} file is the root of the applications state tree, but
 itself only contains limited data:
 \source{beginData}{endData}{AppState.tsx}
 Its main function is to load all plugins and then let them share data between
-each other via the hook system. The set of to be loaded plugins is defined inside
+each other via the hook system. The set of plugins to be loaded is defined inside
 \emph{oxrti.plugins.json}, the plugins defined there will be loaded in order.
 The state tree after inital plugin load is shown in~\autoref{statetree}.
 As only \code{@action}s can modify the state, it is easy to follow the changing
@@ -485,25 +487,19 @@ loadTexture(config: TexForRender) {
     appState.textureIsLoading()
     // shortcut for the WebGL reference
     let gl = this.gl
-    // access the raw data buffer from the texture config
+    // access the raw data buffer from the texture configuration
     let data = config.data
-    // create a Promise
-    // it is basically chaining callbacks together
-    // and then asynchronously executing each step
+    // create a Promise, that basically is chaining callbacks together and then asynchronously executing each step
     let promise =
-        // first create an ImageBitmap object
-        // we need to flipY as the textures are orientated naturally inside the BTF file
-        // but WebGL is expecting them bottom row first
+        // first create an ImageBitmap object, we need to flipY as the textures
+        are orientated naturally inside the BTF file but WebGL is expecting them bottom row first
         createImageBitmap(data, { imageOrientation: 'flipY' })
         // the catch step is called if the previous part failed
         .catch((reason) => {
-            // some browers do not like loading a lot of big textures parrelly
-            // and will garbage collect them in between and thus fail
-            // as a fallback the limiter function is used to limit concurrency of that part to 1
-            // this still allow max currency for other environments
+            // some browsers do not like loading a lot of big textures in parallel and will garbage collect them in between and thus fail, as a fallback the limiter function is used to limit concurrency of that part
             return limiter(() => createImageBitmap(data))
         })
-        // the then part is called when the previous step succedded
+        // the then part is called when the previous step succeeded
         .then(img => {
             // create and bind a new WebGL texture
             let texture = gl.createTexture()
@@ -549,7 +545,7 @@ function to create components bound to the containing plugin:
 A minimal example would be:
 \sourceBE{Plugins/BasePlugin/BasePlugin.tsx}
 The rest of the plugins are presented on a higher conceptual level, as their
-internal APIs are most times used only be themselves. Their hooks will be
+internal APIs are most times used only by themselves. Their hooks will be
 discussed though.
 
 \subsubsection{Base Plugin}
@@ -560,7 +556,7 @@ distinction between components bound to plugins and unbound plugins, by having
 no unbound plugins at all. It also simplifies the code loading, as just the Base
 plugin can be (re-)loaded like all other plugins. The provided components are:
 \begin{itemize}
-\item JSONDisplay, showing a JSON object in a prettified for, used for
+\item JSONDisplay, showing a JSON object in a prettified form, used for
   displaying different metadata objects
 \item BTFMetadataDisplay, showing the currently loaded BTF's data
 \item RenderHooks, to render all components attached to a hook
@@ -615,14 +611,14 @@ If a plugin wants to register a concrete converter it would use following hook:
 
 \subsubsection{PTMConverter Plugin}
 The PTM Converter plugin is converting \emph{.ptm} files, as they are described
-in~\autoref{sec_relfile}. Currently the RGB and LRGB lightning models are
-supported. They main interesting code is the pixel data reader:
+in~\autoref{sec_relfile}. Currently the RGB and LRGB lightening models are
+supported. They main interesting part is the pixel data reader:
 \source{beginRead}{endRead}{Plugins/PTMConverterPlugin/PTMConverterStrategy.tsx}
 
 \subsubsection{Renderer Plugin}
 The Renderer plugin is providing the main user interface, which is split into
 two parts (compare~\autoref{tabview}), on the left the rendered object and on
-the right further controls, as such it is using a comprehensive set of hooks:
+the right further controls. As such it is using a comprehensive set of hooks:
 \source{RendererHooksBegin}{RendererHooksEnd}{Hook.tsx}
 The actual object rendering is done by the stack as described
 in~\autoref{sec_rendererstack}, the Renderer plugin is only providing a
@@ -636,7 +632,7 @@ models. Here only the RGB is covered, as the principles for LRGB are the same.
 Most channel renderers will be split in two parts, one node for the rendering
 stack:
 \sourceBE{Plugins/PTMRendererPlugin/PTMRendererPlugin.tsx}
-And one shader, implementing the lightning model described in~\autoref{sec_relfile}.
+And one shader, implementing the lightening model described in~\autoref{sec_relfile}.
 \glsl{Plugins/PTMRendererPlugin/ptmrgb.glsl}
 
 \subsubsection{LightControl Plugin}
@@ -645,7 +641,7 @@ light source. The user interface is shown in~\autoref{lightcontrol}. The
 linear xy coordinates are transformed into hemispherical coordinates, which are
 then passed onto the current Base node from the Renderer plugin.
 \fig{lightcontrol}{LightControl UI}{The user can drag around on the imaginary
-  dome and change the lightning position.}
+  dome and change the lightening position.}
 
 \subsubsection{Rotation Plugin}
 The Rotation plugin allows the rotation of the viewed object (and other lower
@@ -683,7 +679,7 @@ desired area.
 The Paint plugin adds the functionality to have overlays on the object to allow
 for annotations in a research context. All painting is happening as part of the
 renderer stack, with one node for each layer and one mixer node to combine these
-with the object. As the Paint plugin is interesting implementation wise it is
+with the object. As the Paint plugin is interesting in terms of implementation, it is
 presented in more detail. The main Paint node:
 \sourceBE{Plugins/PaintPlugin/PaintPlugin.tsx}
 The shaders are comparatively simple. Paint first:
@@ -699,31 +695,35 @@ currently, as the max texture limit is usually 16.
   front indicates the layer is currently drawn on. Names are freely changeable.
   The toggle toggles visibility of the layer. The trash icon deletes the
   corresponding layer. +Layer adds another layer on top. The number is the brush
-size. Clicking color shows a color picker.}
+size. Clicking color shows a colour picker.}
 
 \subsubsection{ImpExp Plugin }
 The ImpExp plugin is implementing the import and export of the current
 application state into/from a BTF file. For export the whole state tree is just
 exported as:
 \begin{typescript}
-btf.oxrtiState = (this.appState as any).toJSON()}
+btf.oxrtiState = (this.appState as any).toJSON()
 \end{typescript}
 And for import the state is simply assigned as
 \begin{typescript}
 for (let key in snapshot)
    (this.appState as any)[key] = snapshot[key]
-
 \end{typescript}
 The simpleness of this plugin is a big payoff for using mobx-state-tree and
-classy-mst. All future plugins will be automatically supported, as long as they
+classy-mst.\ mobx-state-tree wil take the partial snapshosts and classy-mst will
+turn these into fresh instances of the respective plugins. All future plugins will be automatically supported, as long as they
 are using their models in the default way.
 
 \subsection{Applications}\label{sec_apps}
+
+
+
 \todoT{Other related graphics}
 \todoT{Applications}
+
+\subsubsection{Electron}
+\todoT{Electron App deliverable}
 \subsubsection{Standalone Website}
 \todoT{Standalone Website}
 \subsubsection{Embeddable}
 \todoT{Embeddable}
-\subsubsection{Electron}
-\todoT{Electron App deliverable}
