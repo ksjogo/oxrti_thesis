@@ -598,20 +598,48 @@ a museum's website, it is just displaying the tab with the highest priority, see
   plugins. Only changes to~\autoref{tabview} are two lines in \emph{oxrti.plugins.json}.}
 
 \subsubsection{Converter Plugin}
-\todoT{Converter Plugin}
-\subsubsection{PTMConverter Plugin}
-\todoT{PTMConverter Plugin}
-\subsubsection{Renderer Plugin}
-\source{RendererHooksBegin}{RendererHooksEnd}{Hook.tsx}
-\todoT{Renderer Plugin}
-\todoT{Base Node}
-\todoT{WebGL texture packing}
-\subsubsection{PTM Renderer Plugin}
-\todoT{PTM Renderer Plugin}
-\todoT{Dynamic Shaders}
-\todoT{RGB vs LRGB}
+The Converter plugin consists of multiple parts:
+\begin{itemize}
+\item The converter user interface, as shown in~\autoref{converterui}.
+\item BMPWriter and PNGWriter, both extending Writer to write the converted
+  textures. The BMPWriter is customised as no current package is offering the
+  required functionality. The PNGWriter is wrapping pngjs.
+\item An abstract base converter strategy, to be extended by plugins providing a
+  concrete converter with the following interface:
+\end{itemize}
+\fig{converterui}{Converter UI}{Converter user interface, with display of the
+  extract manifest.}
+\descBE{Plugins/ConverterPlugin/ConverterStrategy}
+If a plugin wants to register a concrete converter it would use following hook:
+\sourceBE{Plugins/PTMConverterPlugin/PTMConverterPlugin.tsx}
 
-\subsubsection{Light Control Plugin}
+\subsubsection{PTMConverter Plugin}
+The PTM Converter plugin is converting \emph{.ptm} files, as they are described
+in~\autoref{sec_relfile}. Currently the RGB and LRGB lightning models are
+supported. They main interesting code is the pixel data reader:
+\source{beginRead}{endRead}{Plugins/PTMConverterPlugin/PTMConverterStrategy.tsx}
+
+\subsubsection{Renderer Plugin}
+The Renderer plugin is providing the main user interface, which is split into
+two parts (compare~\autoref{tabview}), on the left the rendered object and on
+the right further controls, as such it is using a comprehensive set of hooks:
+\source{RendererHooksBegin}{RendererHooksEnd}{Hook.tsx}
+The actual object rendering is done by the stack as described
+in~\autoref{sec_rendererstack}, the Renderer plugin is only providing a
+dynamically resized and centered surface for the stack to be drawn in. The
+surface is always kept square, even if the loaded BTF is not, to streamline and
+simplify texture coordinate handling.
+
+\subsubsection{PTMRenderer Plugin}
+The PTMRenderer Plugin is rendering the RGB and LRGB channel
+models. Here only the RGB is covered, as the principles for LRGB are the same.
+Most channel renderers will be split in two parts, one node for the rendering
+stack:
+\sourceBE{Plugins/PTMRendererPlugin/PTMRendererPlugin.tsx}
+And one shader, implementing the lightning model described in~\autoref{sec_relfile}.
+\glsl{Plugins/PTMRendererPlugin/ptmrgb.glsl}
+
+\subsubsection{LightControl Plugin}
 \todoT{Light Control Plugin}
 \subsubsection{Rotation Plugin}
 \todoT{Rotation Plugin}
@@ -621,7 +649,7 @@ a museum's website, it is just displaying the tab with the highest priority, see
 \todoT{Zoom Plugin}
 \subsubsection{Paint Plugin}
 \todoT{Zoom Plugin}
-\subsubsection{Import Export Plugin }
+\subsubsection{ImpExp Plugin }
 \todoT{Automatic Import Export}
 
 \subsection{Applications}\label{sec_apps}
