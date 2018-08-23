@@ -630,7 +630,7 @@ dynamically resized and centered surface for the stack to be drawn in. The
 surface is always kept square, even if the loaded BTF is not, to streamline and
 simplify texture coordinate handling.
 
-\subsubsection{PTMRenderer Plugin}
+\subsubsection{PTMRenderer Plugin}\label{sec_ptmrender}
 The PTMRenderer Plugin is rendering the RGB and LRGB channel
 models. Here only the RGB is covered, as the principles for LRGB are the same.
 Most channel renderers will be split in two parts, one node for the rendering
@@ -640,15 +640,48 @@ And one shader, implementing the lightning model described in~\autoref{sec_relfi
 \glsl{Plugins/PTMRendererPlugin/ptmrgb.glsl}
 
 \subsubsection{LightControl Plugin}
-\todoT{Light Control Plugin}
+The LightControl plugin is providing a visual way to control the position of the
+light source. The user interface is shown in~\autoref{lightcontrol}. The
+linear xy coordinates are transformed into hemispherical coordinates, which are
+then passed onto the current Base node from the Renderer plugin.
+\fig{lightcontrol}{LightControl UI}{The user can drag around on the imaginary
+  dome and change the lightning position.}
+
 \subsubsection{Rotation Plugin}
-\todoT{Rotation Plugin}
+The Rotation plugin allows the rotation of the viewed object (and other lower
+rendering nodes). It does so by first centering the object inside a large square
+node of the maximal spanning length when rotated ($width * Math.cos(Math.PI / 4) + height * Math.sin(Math.PI /
+  4)$), so no part will be cut off for the rendering layers on top, and then
+applying a simple rotation matrix on the texture coordinates on the next node.
+An applied rotation is visible in~\autoref{rotated}. Even though the whole
+renderer is rotated, the use of rotation slider will dynamically adapt the pan
+values to keep the previous center centered.
+\fig{rotated}{Rotation Plugin}{Rotated object. Note that the QuickPan views is
+  also rotated.}
+
 \subsubsection{Zoom Plugin}
-\todoT{Zoom Plugin}
+The Zoom plugin is providing zoom and pan functionality (pan would not be
+necessary without zoom), an example is~\autoref{zoom}.
+\fig{zoom}{Zoom Plugin}{Applied zoom, note the small part of the actual object
+  being shown. The shader architecture allows for seamless and performant
+  zooming between nearest viewpoints and more removed ones. }
+
 \subsubsection{QuickPan Plugin}
-\todoT{Zoom Plugin}
+The QuickPan plugin is responsible for rendering the small view box on the top
+right inside~\autoref{rotated} and~\autoref{zoom}. It currently is doing so by
+rendering the Base node, but inside a smaller preview interface and with a lower
+object resolution, by setting the \code{width} and \code{height} properties of
+the nodes (compare the component in~\autoref{sec_ptmrender}). It then uses the
+RectRender component to render the semi-transparent rectangle of the current
+part. To do so, it is using the \code{inversePoint} function on \code{[0, 0]},
+\code{[0,1]}, \code{[1,1]}, \code{[0,1]} to transform the bounds of the
+currently rendered (main) surface into texture coordinates of the object. With
+these coordinates a simple point-in-rectangle check can be done to highlight the
+desired area.
+
 \subsubsection{Paint Plugin}
-\todoT{Zoom Plugin}
+
+
 \subsubsection{ImpExp Plugin }
 \todoT{Automatic Import Export}
 
