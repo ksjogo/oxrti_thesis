@@ -697,6 +697,15 @@ currently, as the max texture limit is usually 16.
   corresponding layer. +Layer adds another layer on top. The number is the brush
 size. Clicking color shows a colour picker.}
 
+\subsubsection{Bookmarks Plugin}
+The Bookmarks plugins allows bookmarks to be set for light and view
+configurations. Bookmarks are controlled via the following hook:
+\source{BookmarkHooksBegin}{BookmarkHooksEnd}{Hook.tsx}
+\fig{bookmark}{Bookmark Plugin}{A click on `Add Bookmark' will preserve the
+  current light and camera positions and create an unnamed entry in the bookmark
+list. Clicking `RES' restores this configuration. They are automatically
+exported when saving the current BTF.}
+
 \subsubsection{ImpExp Plugin }
 The ImpExp plugin is implementing the import and export of the current
 application state into/from a BTF file. For export the whole state tree is just
@@ -714,16 +723,80 @@ classy-mst.\ mobx-state-tree wil take the partial snapshosts and classy-mst will
 turn these into fresh instances of the respective plugins. All future plugins will be automatically supported, as long as they
 are using their models in the default way.
 
-\subsection{Applications}\label{sec_apps}
+\subsubsection{Settings Plugin}
+The Settings plugin provides the user introspection into the currently loaded
+plugins and their configuration options. Plugins use the the SettingsConfig hook
+to register configuration values:
+\source{SettingsHooksBegin}{SettingsHooksEnd}{Hook.tsx}
+The Settings plugin registers a tab and shows these options,
+see~\autoref{settingsplugin}.
+\fig{settingsplugin}{Settings Plugin}{The LightControl plugin registeres toggle
+  for enabling a slider based light control.}
 
-
-
-\todoT{Other related graphics}
-\todoT{Applications}
+\subsection{Targets}\label{sec_apps}
+The multiple targets are configured via two mechanisms:
+Webpack config files, which are configuring the compilation and bundling of the
+source code and other resources. And the \emph{oxrti.plugins.json}, which has following form:
+\begin{typescript}
+{
+    "enabled": [
+        "BasePlugin",
+        "BaseThemePlugin",
+        // ...
+        "ZoomPlugin"
+    ],
+    "disabled": [
+        "SingleViewPlugin",
+        "UndoPlugin",
+        "TestPlugin",
+        // ...
+    ]
+}
+\end{typescript}
+The disabled block is not used within the implementation, but it is convenient
+for a configurator to see which plugins could be included. The loader is then
+only loading the configured plugins when starting the app.
 
 \subsubsection{Electron}
-\todoT{Electron App deliverable}
-\subsubsection{Standalone Website}
-\todoT{Standalone Website}
+Most of the electron compilation is controlled by the electron-webpack package,
+with additions in \emph{webpack.renderer.additions.js} and
+\emph{webpack.renderer.shared.js}. The main process entry point is
+\emph{src/electron/index.tsx}, which contains no further modification at this
+point, but could be extended in the future for more native application features.
+The web process' entry point is \emph{src/renderer/index.tsx}, which is
+installing the electron extensions and the referring to the Loader for the rest
+of the application startup. Compilation is started by executing \code{npm
+  run-script electronbuild} on the command line, the resulting artifacts will be
+in the \emph{dist} folder, in the MacOS use case it will be
+\emph{dist/oxrti-*.dmg}. The development version can be started with \code{npm
+  start} on the CLI.
+\fig{electronapp}{Electron App}{The bundled electron app. Later versions will
+  add some kind of native menu.}
+
+\subsubsection{Web}
+The pure web target is controlled by \emph{webpack.config.js} and
+\emph{webpack.renderer.shared.js}. \code{npm run-script startweb} will start the local
+development server listening on \emph{http://localhost:3000}. \code{npm run-script build}
+will build it statically, with \emph{index.html} and \emph{dist/bundle.js}
+referring to the latest built versions. A zip containing both files with fixed
+relative links is also automatically generated under \emph{dist/oxrti.zip}. This
+zip can be transferred to any computer and a modern web browser should be able
+to run the contained implementation.
+
+\subsubsection{Hosted}
+The build scripts are also generating a hosted version on each commit. On push
+the git repository\cite*{goslar_oxrti:_2018} is automatically feeding this to an
+Azure Functions instance, reachable at
+\url{https://oxrtimaster.azurewebsites.net/api/azurestatic}. This process is
+controlled by \emph{webpack.functions.js} and the files in \emph{azurejs} and
+\emph{azurestatic}, which are basically creating two endpoints on the azure
+site, each hosting the compiled \emph{.js} file or \emph{.html} file.
+
 \subsubsection{Embeddable}
-\todoT{Embeddable}
+There is currently no provisioning for a more automated handling of multiple
+\emph{oxrti.plugin.json} files, so it needs to be exchanged manually before
+building. A proposed embedded configuration for e.g.\ object galleries is provided by
+\emph{oxrti.plugins.embedded.json}, a resulting version is depicted
+in~\autoref{embedded}.
+\fig{embedded}{Embedded Build}{Embedded web version, with SingleView plugin and
+  without Converter, Bookmarks and Paint.}

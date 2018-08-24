@@ -47,6 +47,8 @@
   \renewcommand{\fcolorbox}[4][]{#4}
 %}
 
+\setmintedinline{breaklines}
+
 \newminted[typescript]{TypeScript}{linenos,tabsize=4,breaklines,autogobble}
 
 \newcommand{\sourceExplicit}[3]{%
@@ -63,6 +65,7 @@
   \sourceExplicit{#1}{#2}{../oxrti/src/#3}%
 }%
 
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
 
 \newcommand{\descBE}[1]{%
   \sourceExplicit{begin}{end}{../oxrti/dist/src/#1.d.ts}%
@@ -72,7 +75,7 @@
   \sourceExplicit{#1}{#2}{../oxrti/dist/src/#3.d.ts}%
 }%
 
-\newcommand{\code}[1]{\mintinline{c}{#1}}
+\newcommand{\code}[1]{\mintinline[breaklines]{c}{#1}}
 
 
 \newcommand{\glsl}[1]{%
