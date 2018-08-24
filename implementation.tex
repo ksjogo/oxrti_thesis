@@ -724,18 +724,18 @@ turn these into fresh instances of the respective plugins. All future plugins wi
 are using their models in the default way.
 
 \subsubsection{Settings Plugin}
-The Settings plugin provides the user introspection into the currently loaded
+The Settings plugin provides the user with introspection into the currently loaded
 plugins and their configuration options. Plugins use the the SettingsConfig hook
 to register configuration values:
 \source{SettingsHooksBegin}{SettingsHooksEnd}{Hook.tsx}
 The Settings plugin registers a tab and shows these options,
 see~\autoref{settingsplugin}.
-\fig{settingsplugin}{Settings Plugin}{The LightControl plugin registeres toggle
-  for enabling a slider based light control.}
+\fig{settingsplugin}{Settings Plugin}{The LightControl plugin registers a toggle
+  for enabling/disabling a slider based light control.}
 
 \subsection{Targets}\label{sec_apps}
 The multiple targets are configured via two mechanisms:
-Webpack config files, which are configuring the compilation and bundling of the
+Webpack configuration files, which are configuring the compilation and bundling of the
 source code and other resources. And the \emph{oxrti.plugins.json}, which has following form:
 \begin{typescript}
 {
