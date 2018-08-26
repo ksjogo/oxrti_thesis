@@ -1,11 +1,65 @@
 \section{Results}
+This sections summarises the results of the project and adds some quantitative
+analysis of the implementation. The feature set is fully reflected inside the
+implementation section (or the table of contents), so no additional
+summarization is done here.
 
-\subsection{Featureset}
-\todoT{Featureset Comparison}
-\todoD{Screeshots}
+\subsubsection{Performance}
+The currently most used RTI viewer is the Cultural Heritage Imaging
+one's\cite*{noauthor_cultural_nodate-1}, so the performance comparisons are done
+against that implementation. The data is shown
+in~\autoref{table_fileformat_results}. The BTF files are about 50\% the size of
+the ptm files, with increasing compression benefits the larger the ptm file is.
+The same pattern is evident in the load time as~\autoref{loadtimes} shows. The
+bigger the files are, the more profitable is the shader implementation.
+\fig{loadtimes}{Load time comparison}{Load time comparison.}
 
-\subsection{Performance}
-\todoT{Performance}
+\begin{table}[H]
+\begin{tabular}{|c |  c c c c c c|}
+ \hline
+ File & Pixel & Conv & Load & Load RTI & ptm size & btf size\\
+  \hline
+  \emph{AK1A\_LRGB} & 3008x2000 & 4906 & 1713 & 11800 & 54.1 & 30  \\
+  \emph{Coin\_LRGB} & 7360x4912 & 24674 & 8224 & 59200 & 325.4 & 136  \\
+  \emph{Mummy\_RGB} & 583x1000 & 1769 & 627 & 5200 & 10.5 & 5.6  \\
+  \emph{tablet2\_LRGB} & 512x512 & 732 & 462 & 1600 & 2.4 & 1.2  \\
+  \emph{Warrior\_RGB} & 2299x3200 & 10590 & 2184 & 25500 & 132.4 & 50.2  \\
+ \hline
+\end{tabular}
+\caption{Performance Comparison}
+\emph{File} names refer to the files distributed as \cite*{goslar_oxrti_data:_2018}.
+\emph{Pixel} are the dimensions as width x height. \emph{Conv} is the time taken
+by the implementation to convert the ptm file to the btf format. \emph{Load} is
+the time taken by the oxrti implementation from receiving the btf file to do a complete render. \emph{Load
+  RTI} is the approximate time taken by the RTIViewer from opening the file to
+finishing the loading (time stopped by screenrecording, as no performance
+measurements are provided, time for processing of mipmaps and normal maps
+excluded, as the oxrti implementation is not doing these steps, time to full
+first render would be even longer). \emph{ptm size} is the file size in
+megabytes. \emph{btf size} is the file size of a plain BTF file (no extra oxrti
+state and/or layers).
+\label{table_fileformat_results}
+\end{table}
+
+\subsection{Accuracy}
+The next thing to verify is the accuracy, is the implemented rendering actually
+the `right' imagine. To quantify that, the Root Mean Square Error as presented
+by Happa and Gogosio\cite*{gogioso_pbr:_2017} was picked, as it the compared
+files have
+rendering
+\begin{table}[H]
+\centering
+\begin{tabular}{|c |  c c c | c|}
+ \hline
+ File & RMSE(R) & RMSE(G) & RMSE(B) & SUM  \\
+  \hline
+  \emph{tablet2\_LRGB} & 0.649 & 0.677 & 0.674  & 2.000 \\
+  \emph{Warrior\_RGB} &0.627 & 0.612 & 0.610 & 1.849  \\
+ \hline
+\end{tabular}
+\caption{Table to test captions and labels}
+\label{table_Accuracy}
+\end{table}
 
 \subsection{Testing}
 \todoT{Testing}

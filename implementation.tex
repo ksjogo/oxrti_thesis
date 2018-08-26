@@ -634,6 +634,16 @@ stack:
 \sourceBE{Plugins/PTMRendererPlugin/PTMRendererPlugin.tsx}
 And one shader, implementing the lightening model described in~\autoref{sec_relfile}.
 \glsl{Plugins/PTMRendererPlugin/ptmrgb.glsl}
+In addition to the default rendering mode the PTMRenderer plugin is also
+supporting a Normals rendering mode for LRGB ptms. See~\autoref{renderingmodes}
+for a visual example. It is based on the proposal by MacDonald and
+Robson\cite*{macdonald_polynomial_2010} and currently supports 4 extra rendering
+modes: X-Normal, Y-Normal, Z-Normal and False-Color-Normal. The first three
+render the respective value of the normal of the pixel as grey scale, the false
+color one maps X to R, Y to G and Z to B.
+\fig{renderingmodes}{Normal Rendering}{The Tablet ptm rendered with false color
+  normals. The user can change the mode with the `Rendering Mode'' drop down on
+  the top right.  }
 
 \subsubsection{LightControl Plugin}
 The LightControl plugin is providing a visual way to control the position of the
@@ -695,7 +705,7 @@ currently, as the max texture limit is usually 16.
   front indicates the layer is currently drawn on. Names are freely changeable.
   The toggle toggles visibility of the layer. The trash icon deletes the
   corresponding layer. +Layer adds another layer on top. The number is the brush
-size. Clicking color shows a colour picker.}
+size. Clicking color shows a color picker.}
 
 \subsubsection{Bookmarks Plugin}
 The Bookmarks plugins allows bookmarks to be set for light and view
