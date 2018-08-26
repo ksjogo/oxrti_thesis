@@ -640,7 +640,7 @@ The LightControl plugin is providing a visual way to control the position of the
 light source. The user interface is shown in~\autoref{lightcontrol}. The
 linear xy coordinates are transformed into hemispherical coordinates, which are
 then passed onto the current Base node from the Renderer plugin.
-\fig{lightcontrol}{LightControl UI}{The user can drag around on the imaginary
+\fig{lightcontrol}{LightControl Plugin}{The user can drag around on the imaginary
   dome and change the lightening position.}
 
 \subsubsection{Rotation Plugin}
@@ -664,12 +664,12 @@ necessary without zoom), an example is~\autoref{zoom}.
 
 \subsubsection{QuickPan Plugin}
 The QuickPan plugin is responsible for rendering the small view box on the top
-right inside~\autoref{rotated} and~\autoref{zoom}. It currently is doing so by
-rendering the Base node, but inside a smaller preview interface and with a lower
-object resolution, by setting the \code{width} and \code{height} properties of
+right inside~\autoref{rotated} and~\autoref{zoom}. It is doing so by
+rendering injecting a temporary node inside the rendering stack, waiting for an
+object's first render and then preserving that texture in a lower resolution, by setting the \code{width} and \code{height} properties of
 the nodes (compare the component in~\autoref{sec_ptmrender}). It then uses the
 RectRender component to render the semi-transparent rectangle of the current
-part. To do so, it is using the \code{inversePoint} function on \code{[0, 0]},
+visible part over the captured texture. To do so, it is using the \code{inversePoint} function on \code{[0, 0]},
 \code{[0,1]}, \code{[1,1]}, \code{[0,1]} to transform the bounds of the
 currently rendered (main) surface into texture coordinates of the object. With
 these coordinates a simple point-in-rectangle check can be done to highlight the
@@ -691,7 +691,7 @@ Mixer source:
 \glsl{Plugins/PaintPlugin/mixer.glsl}
 The user interface is shown in~\autoref{painting}. Up to 15 layers are supported
 currently, as the max texture limit is usually 16.
-\fig{painting}{Paint plugin}{Paint plugin user interface. The check mark in
+\fig{painting}{Paint Plugin}{Paint plugin user interface. The check mark in
   front indicates the layer is currently drawn on. Names are freely changeable.
   The toggle toggles visibility of the layer. The trash icon deletes the
   corresponding layer. +Layer adds another layer on top. The number is the brush
@@ -705,6 +705,18 @@ configurations. Bookmarks are controlled via the following hook:
   current light and camera positions and create an unnamed entry in the bookmark
 list. Clicking `RES' restores this configuration. They are automatically
 exported when saving the current BTF.}
+
+\subsubsection{Notes Plugin}
+The Notes plugin implements notes, which are attached to a specific point of the
+viewed object. Each notes consists of the parts: One indicator which is linked
+to the texture and whose position is transformed like the texture and one popup,
+which calculates its absolute screen coordinates to show the note's name and
+text. See~\autoref{notes} for an example.
+\fig{notes}{Notes Plugin}{Notes are created by switching the `Notes Create:'
+  toggle and then clicking anywhere on the texture. The red and white dots
+  indicate the presence of a note at that point, clicking it will toggle the
+  display of the note. Clicking the note's name on the right side, will center
+  that note's indicator.}
 
 \subsubsection{ImpExp Plugin }
 The ImpExp plugin is implementing the import and export of the current
@@ -728,10 +740,11 @@ The Settings plugin provides the user with introspection into the currently load
 plugins and their configuration options. Plugins use the the SettingsConfig hook
 to register configuration values:
 \source{SettingsHooksBegin}{SettingsHooksEnd}{Hook.tsx}
-The Settings plugin registers a tab and shows these options,
+The Settings plugin registers a tab and will show the configuration components,
 see~\autoref{settingsplugin}.
 \fig{settingsplugin}{Settings Plugin}{The LightControl plugin registers a toggle
   for enabling/disabling a slider based light control.}
+
 
 \subsection{Targets}\label{sec_apps}
 The multiple targets are configured via two mechanisms:
@@ -800,3 +813,11 @@ building. A proposed embedded configuration for e.g.\ object galleries is provid
 in~\autoref{embedded}.
 \fig{embedded}{Embedded Build}{Embedded web version, with SingleView plugin and
   without Converter, Bookmarks and Paint.}
+
+\subsubsection{Mobile Phones}
+Mobile phones are supported (see~\autoref{rtimobile}), but currently might have
+problems with the distinction between \emph{touch} and \emph{click} events and
+currently have no specialized layout.
+\fig{rtimobile}{Mobile Phone Viewer}{Implementation running on a Huawei P10
+  mobile phone with the Chrome browser. Opening a BTF is done through clicking the
+  upload area.}
