@@ -510,7 +510,7 @@ loadTexture(config: TexForRender) {
                 case 'PNG8':
                     type = gl.LUMINANCE
                     break
-x                // ...
+                // ...
                 case 'PNG32':
                     type = gl.RGBA
                     break
@@ -583,15 +583,25 @@ Electron output and the online hosted version. As a tabbed container will
 occasionally delete the content of non-active tabs, some hooks are needed to
 ensure graceful behaviour of all displayed tabs:
 \source{AppHooksBegin}{AppHooksEnd}{Hook.tsx}
-This view is depicted in~\autoref{tabview}.
-\fig{tabview}{Viewer with TabView}{Viewer with loaded TabView and RedTheme
-  plugins. Tabbar on top, with action buttons on top right.}
+This view is depicted in~\autoref{viewcomparison}.
 
 \subsubsection{SingleView Plugin}
 The SingleView plugin is aimed to provide a contained viewer experience, e.g.\ on
-a museum's website, it is just displaying the tab with the highest priority, see~\autoref{singleview}.
-\fig{singleview}{Viewer with SingleView}{Viewer with loaded SingleView and BlueTheme
-  plugins. Only changes to~\autoref{tabview} are two lines in \emph{oxrti.plugins.json}.}
+a museum's website, it is just displaying the tab with the highest priority, see~\autoref{viewcomparison}.
+
+\begin{figure}
+  \begin{subfloat}[Viewer with TabView and RedTheme]
+    {\includegraphics[max
+    width=0.5\linewidth]{images/tabview}}
+\end{subfloat}
+\begin{subfloat}[Viewer with SingleView and BlueTheme]
+  {\includegraphics[max
+    width=0.5\linewidth]{images/singleview}}
+\end{subfloat}
+\caption[View Comparison]{Only changes are two lines in \emph{oxrti.plugins.json}.}
+\label{viewcomparison}
+\end{figure}
+
 
 \subsubsection{Converter Plugin}
 The Converter plugin consists of multiple parts:
@@ -617,7 +627,7 @@ supported. They main interesting part is the pixel data reader:
 
 \subsubsection{Renderer Plugin}
 The Renderer plugin is providing the main user interface, which is split into
-two parts (compare~\autoref{tabview}), on the left the rendered object and on
+two parts, on the left the rendered object and on
 the right further controls. As such it is using a comprehensive set of hooks:
 \source{RendererHooksBegin}{RendererHooksEnd}{Hook.tsx}
 The actual object rendering is done by the stack as described
@@ -658,23 +668,21 @@ The Rotation plugin allows the rotation of the viewed object (and other lower
 rendering nodes). It does so by first centering the object inside a large square
 node of the maximal spanning length when rotated ($width * Math.cos(Math.PI / 4) + height * Math.sin(Math.PI /
   4)$), so no part will be cut off for the rendering layers on top, and then
-applying a simple rotation matrix on the texture coordinates on the next node.
-An applied rotation is visible in~\autoref{rotated}. Even though the whole
+applying a simple rotation matrix on the texture coordinates on the next node. Even though the whole
 renderer is rotated, the use of rotation slider will dynamically adapt the pan
 values to keep the previous center centered.
-\fig{rotated}{Rotation Plugin}{Rotated object. Note that the QuickPan views is
-  also rotated.}
 
 \subsubsection{Zoom Plugin}
 The Zoom plugin is providing zoom and pan functionality (pan would not be
-necessary without zoom), an example is~\autoref{zoom}.
+necessary without zoom), an example is~\autoref{zoom}. All zooming and panning
+is implemented as a special shader in the render stack.
 \fig{zoom}{Zoom Plugin}{Applied zoom, note the small part of the actual object
   being shown. The shader architecture allows for seamless and performant
   zooming between nearest viewpoints and more removed ones. }
 
 \subsubsection{QuickPan Plugin}
 The QuickPan plugin is responsible for rendering the small view box on the top
-right inside~\autoref{rotated} and~\autoref{zoom}. It is doing so by
+right inside~\autoref{zoom}. It is doing so by
 rendering injecting a temporary node inside the rendering stack, waiting for an
 object's first render and then preserving that texture in a lower resolution, by setting the \code{width} and \code{height} properties of
 the nodes (compare the component in~\autoref{sec_ptmrender}). It then uses the
@@ -718,7 +726,7 @@ exported when saving the current BTF.}
 
 \subsubsection{Notes Plugin}
 The Notes plugin implements notes, which are attached to a specific point of the
-viewed object. Each notes consists of the parts: One indicator which is linked
+viewed object. Each note consists of two parts: One indicator which is linked
 to the texture and whose position is transformed like the texture and one popup,
 which calculates its absolute screen coordinates to show the note's name and
 text. See~\autoref{notes} for an example.
@@ -793,8 +801,6 @@ of the application startup. Compilation is started by executing \code{npm
 in the \emph{dist} folder, in the MacOS use case it will be
 \emph{dist/oxrti-*.dmg}. The development version can be started with \code{npm
   start} on the CLI.
-\fig{electronapp}{Electron App}{The bundled electron app. Later versions will
-  add some kind of native menu.}
 
 \subsubsection{Web}
 The pure web target is controlled by \emph{webpack.config.js} and
@@ -819,15 +825,21 @@ site, each hosting the compiled \emph{.js} file or \emph{.html} file.
 There is currently no provisioning for a more automated handling of multiple
 \emph{oxrti.plugin.json} files, so it needs to be exchanged manually before
 building. A proposed embedded configuration for e.g.\ object galleries is provided by
-\emph{oxrti.plugins.embedded.json}, a resulting version is depicted
-in~\autoref{embedded}.
-\fig{embedded}{Embedded Build}{Embedded web version, with SingleView plugin and
-  without Converter, Bookmarks and Paint.}
+\emph{oxrti.plugins.embedded.json}.
 
 \subsubsection{Mobile Phones}
-Mobile phones are supported (see~\autoref{rtimobile}), but currently might have
+Mobile phones are supported, but currently might have
 problems with the distinction between \emph{touch} and \emph{click} events and
 currently have no specialized layout.
-\fig{rtimobile}{Mobile Phone Viewer}{Implementation running on a Huawei P10
+
+\begin{figure}
+\begin{subfloat}[The bundled Electron app. Later versions will
+  add some kind of native menu.]{\includegraphics[max width=0.32\linewidth]{images/electronapp}}\end{subfloat}
+\begin{subfloat}[Embedded web version, with SingleView plugin and
+  without Converter, Bookmarks and Paint.]{\includegraphics[max width=0.32\linewidth]{images/embedded}}\label{embedded}\end{subfloat}
+\begin{subfloat}[Implementation running on a Huawei P10
   mobile phone with the Chrome browser. Opening a BTF is done through clicking the
-  upload area.}
+  upload area.]{\includegraphics[max width=0.32\linewidth]{images/rtimobile}}\label{rtimobile}\end{subfloat}
+\caption[Target Comparison]{Target Comparison}
+\label{targetcomparison}
+\end{figure}
