@@ -39,6 +39,13 @@ loading into WebGL.
 
 In case of usage with the oxrti viewer, following files can be present in
 addition to those mentioned above:
+\begin{itemize}
+\item A \textbf{Layers} file in JSON format, named \texttt{oxrti\_layers.json}.
+  In addition a \texttt{layers} folder should be present, containing the
+  textures for the layers.
+\item A \textbf{State} file in JSON format, named \texttt{oxrti\_state.json}.
+
+\end{itemize}
 
 \hypertarget{manifest}{%
 \subsection{Manifest}\label{manifest}}
@@ -57,8 +64,7 @@ entries, named \texttt{width}, \texttt{height}, \texttt{channels} and
 attributes have values in the positive integers describing the
 dimensions of the BTDF. The \texttt{channel-model} attribute has value a
 non-empty alphanumeric string uniquely identifying the BRDF/BSDF colour
-model used by the BTF file (see \protect\hyperlink{Options}{Options}
-section below). The \texttt{channels} element has an arbitrary amout of
+model used by the BTF file (see the Options section below). The \texttt{channels} element has an arbitrary amout of
 named \texttt{channel} entries, according to the \texttt{channel-model}.
 \item Additionally the \texttt{data} element has one untyped entry named
 \texttt{formatExtra}, where format implementation specific data can be
@@ -68,11 +74,11 @@ consisting of an arbitrary number of \texttt{coefficent} entries, as
 well as one \texttt{coefficient-model} attribute. The
 \texttt{coefficient-model} attribute has value a non-empty alphanumeric
 string uniquely identifying the BRDF/BSDF approximation model used by
-the BTF file (see \protect\hyperlink{Options}{Options} section below).
+the BTF file (see the Options section below).
 \item Each \texttt{coefficient} element has one attribute: \texttt{format}.
 The \texttt{format} attribute has value a non-empty alphanumeric string
 uniquely identifying the image file format used to store the channel
-values (see \protect\hyperlink{Options}{Options} section below).
+values (see the Options section below).
 \end{itemize}
 
 \hypertarget{textures}{%
@@ -90,6 +96,11 @@ point \texttt{(u,v)}, according to the model jointly specified by the
 values of the attribute \texttt{model} for element \texttt{channels}
 (colour model) and the attribute \texttt{model} for element
 \texttt{coefficients} (approximation model).
+
+In case of collated coefficients,
+the texture will not be greyscale, but RGB or RGBA and
+the coefficients are split into the RGBA channels in order of their appearance
+inside the \texttt{coefficient}'s name.
 
 \hypertarget{options}{%
 \subsection{Options}\label{options}}
@@ -162,3 +173,22 @@ bit-depth.
 \item \texttt{Truecolor\ and\ alpha} with 16-bit/channel to
 encode 64-bit bit-depth.
 \end{itemize}
+
+\hypertarget{Layers}{%
+  \subsection{Layers}\label{Layers}}
+The layer file is a JSON file with a root array, containing a sorted list of layer
+information dictionaries, which consist of 3 attributes each:
+\begin{itemize}
+\item A \texttt{name} JSON string. It is also the prefix of the layer's
+  texture inside the \texttt{layers} folder, where the corresponding
+  \texttt{name.png} file resides.
+\item A \texttt{texture} object with no further attributes, to replaced at
+  runtime with the actual texture data.
+\item A \texttt{id} JSON string, to be changed each time a layer texture is exported.
+\end{itemize}
+
+\hypertarget{State}{%
+  \subsection{State}\label{State}}
+The state file is a JSON file with oxrti implementation details and is unlikely
+to be of further use for other software, it basically stores the state of all
+loaded plugins.

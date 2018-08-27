@@ -63,10 +63,37 @@ In addition these non-functional requirements were decided upon:
 Alhough the LoC deems the PTM format ``relatively transparent. It can be viewed
 in plain text editors. [\ldots] A very simple program would present these
 numbers in a human-readable
-form.''\cite*{library_of_congress_polynomial_2018} the author disagrees with
-this judgment.
+form.''\cite*{library_of_congress_polynomial_2018} the author thinks that
+another implementation could be even more transparent and easy for people to
+understand. One simple inital step is to move to multiple files for representing
+the coefficients, each being a valid image (BMP or PNG) themselves. This allows
+for easy human inspection, simplifies texture loading in a web context (as PNG
+textures are supported) and allows easy interactions with other tools. Having
+multiple files anyway, the textual data description and metadata can also be
+stored in an extra plain text file, making it editable with standard tools. How
+to easily distribute multiple files though - just archive (zip) them and distribute as
+one. Web browsers do not unpack zips inside their JavaScript run times natively,
+but libraries\cite*{noauthor_jszip_nodate} exist for that functionality. All
+this multi file handling is abstracted away from the user, he will just handle a
+single \emph{.btf.zip} file, but provides access if interested. Having the
+ability to add extra files to the archive also allows for easy extensions, for
+example oxrti adds the layer and state saving functionalities, which are stored
+as extra entries. For an unpacked example see~\autoref{unpacked}. Having the web
+as first target, JSON files are the natural match to describe the contained
+data. The full specification is available standalone at the end of this document
+(\autoref{sec_fileformat}) to accommodate easy redistribution and improve
+accessibility.
+
+\fig{unpacked}{Unpacked BTF file}{Unpacked BTF file, manifest.json is the
+  standardised data description, oxrti\_* are extensions. The L folder contains
+  textures for the single coefficients in grey scale format.}
 
 \subsection{Architecture}
+\sidefig{classes}{Class and Component Overview}{All classes and components of
+  the implementation. Inheritance arrows from each Plugin to the Plugin
+  base class omitted for clarity. Boxes are files, usually html/css/glsl.
+  Cylinders are rendering stack nodes. Rectangles with two connectors on the
+  left are user interface components.}
 
 \subsection{State-Driven}
 \todoT{State-Driven}
