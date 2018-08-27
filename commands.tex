@@ -2,8 +2,6 @@
 
 \newcommand{\para}[1]{\paragraph{#1}\mbox{}\\}
 
-\usepackage[export]{adjustbox}
-
 \newcommand{\fig}[3]{\begin{figure}[] \centering
     \includegraphics[max width=\textwidth]{images/#1}
     \caption[#2]{#3\label{#1}}
@@ -19,7 +17,6 @@
 
 % \renewcommand{\fig}[2]{}
 
-\usepackage[colorinlistoftodos]{todonotes}
 \newcommand{\todoQ}[1]{\todo[inline,color=yellow]{\textbf{Todo Quote:\\}#1}}
 \newcommand{\todoT}[1]{\todo[inline,color=yellow]{\textbf{Todo Text:\\}#1}}
 \newcommand{\todoD}[1]{\todo[inline,color=green]{\textbf{Todo Diagramm:\\}#1}}
@@ -66,8 +63,6 @@
   \sourceExplicit{#1}{#2}{../oxrti/src/#3}%
 }%
 
-\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
-
 \newcommand{\descBE}[1]{%
   \sourceExplicit{begin}{end}{../oxrti/dist/src/#1.d.ts}%
 }%
@@ -82,6 +77,3 @@
 \newcommand{\glsl}[1]{%
   \inputminted[linenos,tabsize=4,breaklines,autogobble]{glsl}{../oxrti/src/#1}
 }%
-
-\usepackage{subfig}
-\usepackage[subfigure]{tocloft}

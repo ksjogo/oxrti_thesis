@@ -37,6 +37,12 @@
 % This package is for urls
 \usepackage{url}
 
+\usepackage{subfig}
+\usepackage[subfigure]{tocloft}
+\usepackage{amsmath}
+\usepackage[export]{adjustbox}
+\usepackage[colorinlistoftodos]{todonotes}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
 
 \usepackage{minted}
 
@@ -79,14 +85,14 @@
 \newpage
 
 \pagenumbering{arabic}
-%\input{introduction}
+\input{introduction}
 \input{relatedwork}
 %\input{methodology}
 %\input{reqsanddesign}
 %\input{implementation}
 %\input{results}
 %\input{conclusion}
-%\input{appendix}
+\input{appendix}
 
 
 \end{document}
