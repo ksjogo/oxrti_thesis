@@ -2,6 +2,7 @@
 
 \newcommand{\para}[1]{\paragraph{#1}\mbox{}\\}
 
+\usepackage[export]{adjustbox}
 
 \newcommand{\fig}[3]{\begin{figure}[] \centering
     \includegraphics[max width=\textwidth]{images/#1}
@@ -81,3 +82,6 @@
 \newcommand{\glsl}[1]{%
   \inputminted[linenos,tabsize=4,breaklines,autogobble]{glsl}{../oxrti/src/#1}
 }%
+
+\usepackage{subfig}
+\usepackage[subfigure]{tocloft}
