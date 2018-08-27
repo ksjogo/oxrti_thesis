@@ -80,9 +80,60 @@ ability to add extra files to the archive also allows for easy extensions, for
 example oxrti adds the layer and state saving functionalities, which are stored
 as extra entries. For an unpacked example see~\autoref{unpacked}. Having the web
 as first target, JSON files are the natural match to describe the contained
-data. The full specification is available standalone at the end of this document
+data. The data specification's main goal was future extensibility and  coverage
+of all existing formats, the developed specification is available standalone at the end of this document
 (\autoref{sec_fileformat}) to accommodate easy redistribution and improve
-accessibility.
+accessibility. One fairly self-explanatory example of converter output:
+\begin{json}
+{
+  "name": "tablet2_LRGB",
+  "data": {
+    "width": 512,
+    "height": 512,
+    // the channel model declares how the channels are combined to form the
+    resulting picture
+    "channelModel": "LRGB",
+    "channels": {
+      // each channel declares how it should be calculated, RTIpoly6 is the calculated described in the related work section
+      "L": {
+        "coefficentModel": "RTIpoly6",
+        "coefficents": {
+          "a0": { "format": "PNG8" },
+          "a1": { "format": "PNG8" },
+          "a2": { "format": "PNG8" },
+          "a3": { "format": "PNG8" },
+          "a4": { "format": "PNG8" },
+          "a5": { "format": "PNG8" }
+        }
+      },
+      "R": {
+        // flat is just taking the straight value from the texture
+        "coefficentModel": "flat",
+        "coefficents": {
+          "a0": { "format": "PNG8" }
+        }
+      },
+      "G": {
+        "coefficentModel": "flat",
+        "coefficents": {
+          "a0": { "format": "PNG8" }
+        }
+      },
+      "B": {
+        "coefficentModel": "flat",
+        "coefficents": {
+          "a0": { "format": "PNG8"}
+        }
+      }
+    },
+    // format extra is channelModel dependant and of free JSON form
+    "formatExtra": {
+      "scales": [2, 2, 2, 2, 2, 2],
+      "biases": [149, 151, 68, 77, 77, 0]
+    }
+  }
+}
+\end{json}
 
 \fig{unpacked}{Unpacked BTF file}{Unpacked BTF file, manifest.json is the
   standardised data description, oxrti\_* are extensions. The L folder contains
