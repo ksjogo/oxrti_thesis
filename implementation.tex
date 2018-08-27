@@ -611,7 +611,7 @@ If a plugin wants to register a concrete converter it would use following hook:
 
 \subsubsection{PTMConverter Plugin}\label{sec_ptmconverter}
 The PTM Converter plugin is converting \emph{.ptm} files, as they are described
-in~\autoref{sec_relfile}. Currently the RGB and LRGB lightening models are
+in~\autoref{sec_relfile}. Currently the RGB and LRGB light models are
 supported. They main interesting part is the pixel data reader:
 \source{beginRead}{endRead}{Plugins/PTMConverterPlugin/PTMConverterStrategy.tsx}
 
@@ -632,7 +632,7 @@ models. Here only the RGB is covered, as the principles for LRGB are the same.
 Most channel renderers will be split in two parts, one node for the rendering
 stack:
 \sourceBE{Plugins/PTMRendererPlugin/PTMRendererPlugin.tsx}
-And one shader, implementing the lightening model described in~\autoref{sec_relfile}.
+And one shader, implementing the light model described in~\autoref{sec_relfile}.
 \glsl{Plugins/PTMRendererPlugin/ptmrgb.glsl}
 In addition to the default rendering mode the PTMRenderer plugin is also
 supporting a Normals rendering mode for LRGB ptms. See~\autoref{renderingmodes}
@@ -651,7 +651,7 @@ light source. The user interface is shown in~\autoref{lightcontrol}. The
 linear xy coordinates are transformed into hemispherical coordinates, which are
 then passed onto the current Base node from the Renderer plugin.
 \fig{lightcontrol}{LightControl Plugin}{The user can drag around on the imaginary
-  dome and change the lightening position.}
+  dome and change the light position.}
 
 \subsubsection{Rotation Plugin}
 The Rotation plugin allows the rotation of the viewed object (and other lower
