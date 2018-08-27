@@ -1,19 +1,17 @@
 \section{Requirements}
 In preparation for the project the author had multiple informal conversations
 with consenting RTI users from different Oxford departments in relation to their
-current usage of RTI viewing software and wishes for a modernized software. One
-common point was the wish for a unification of the used software, most
+current usage of RTI viewing software and wishes for a modernized software. The prevailing wish was for a unification of the software that is used, most
 researchers had to export screenshots from the RTI software, to then add
 annotations and drawings in their graphical editing software. But in their
 graphical editing software all the advantages of an RTI image were then lost.
-Based on that and the discussed related work following requirements were arrived
-at under the assumption of considering this project an exploratory piece of work
+Following these discussions, the following requirements were decided upon.
+The assumption was made that this project be considered an exploratory piece of work
 to show possible new directions for RTI softwares.
 
 The first overall goal is the main focus on web technologies. The new viewer
 should be available on as many platforms as possible and allow for easy
-distribution and usage, as well as a comforting developer experience. Based on
-that the importance for a web supported fileformat came next. No browser is supporting
+distribution and usage, as well as a comfortable developer experience. Because of this, the next priority was a web-supported fileformat. No browser currently supports
 RTI or PTM files natively,  so some conversion needs to take place. The
 requirement of an additional conversion software would be diametrical to the
 `everything web based' goal though, so the browsers need to be able to also
@@ -30,7 +28,7 @@ do so was to develop a newer file format with following features:
 \item Easy exchange between multiple researchers and computers.
 \end{enumerate}
 
-For the viewer following features were deemed essential:
+For the viewer the following features were deemed essential:
 \begin{enumerate}[resume]
 \item Compatible with all major operating systems and/or web browsers.\label{req_system}
 \item Light Controls to change the position of the virtual light source.
@@ -38,15 +36,15 @@ For the viewer following features were deemed essential:
 \item Quick navigation functionality.
 \item Annotations to allow for further textual information relating to a part of
   the viewer object.
-\item Paintable layers to further clarify scripture.
+\item Paintable layers to further clarify surface details.
 \end{enumerate}
 
-In addition these non-functional requirements were arrived at:
+In addition these non-functional requirements were decided upon:
 \begin{enumerate}[resume]
 \item  Free Software, the implementation should be available for everyone to
   change and distribute. No email-walling, instead embracing jump-in
   interactions between multiple parties. \label{req_os}
-\item Suitable of new developers: for scientists for research purposes,
+\item Suitable for new developers: for scientists for research purposes,
   or students for educational purposes. \label{req_easy}
 \item Plugin support to allow independent additions or modifications to the core software.
 \item Good developer experience. \label{req_dx}
@@ -62,8 +60,7 @@ In addition these non-functional requirements were arrived at:
 \section{Design}
 
 \subsection{Fileformat}
-With
-Though the LoC deems the PTM format ``''relatively transparent. It can be viewed
+Alhough the LoC deems the PTM format ``relatively transparent. It can be viewed
 in plain text editors. [\ldots] A very simple program would present these
 numbers in a human-readable
 form.''\cite*{library_of_congress_polynomial_2018} the author disagrees with

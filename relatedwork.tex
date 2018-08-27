@@ -5,15 +5,22 @@ part, so that will covered in most depth.
 
 \subsection{RTI Theory and Workflows}
 
-The RTI workflow is a three step one (see~\autoref{capture}) in our context
-(with the hunt for the physical object excluded). The object is placed central under
+The RTI workflow contains three steps (see~\autoref{capture}) in our context
+(with the hunt for the physical object excluded). The object is placed centrally under
 some capturing device (like~\autoref{dome}). A camera is
-statically mounted on top. And the lights are setup to be lit in
-order to have a different light position for all captured images. From these
+statically mounted on top. The lights are set up so that all captured images will have a different light position. From these
 images the RTI coefficents are calculated (see~\autoref{overview1}).
 
 \fig{capture}{RTI Workflow}{RTI workflow, courtesy of CHI\cite*{noauthor_cultural_nodate-1}.}
-\fig{dome}{RTI Dome}{RTI dome, from Malzbender et al.\cite*{malzbender_polynomial_2001}.}
+
+\begin{figure}
+\begin{subfloat}[]{\includegraphics[max width=0.5\linewidth]{images/rtiaction1}}\end{subfloat}
+\begin{subfloat}[]{\includegraphics[max width=0.5\linewidth]{images/rtiaction2}}\end{subfloat}
+\caption[RTI in Action]{(a) shows the spread out light sources inside an RTI
+  dome. (b) shows an object being positioned. Images from Piquette and Crowther.\cite*{piquette_developing_2011}}
+\label{dome}
+\end{figure}
+
 
 \begin{figure}
 \begin{subfloat}[]{\includegraphics[max width=0.32\linewidth]{images/normals_01}}\end{subfloat}
@@ -69,8 +76,8 @@ texel in separated RGB blocks. PTM\_FORMAT\_LRGB stores $a_{0}$-$a_{5}$ per texe
 first, then followed by RGB blocks of a single coefficient per texel. The
 destructuring of these is presented in detail in~\autoref{sec_ptmconverter}. Different
 embedded JPEG compression styles are specified as well, but due to their
-relatively small popularity and increased complexity skipped over for the inital
-oxrti version.
+relatively small popularity and increased complexity, the initial oxrti version
+has ommitted them.
 
 The \.RTI fileformat specification by Corsini et al.\cite*{corsini_rti_2010} is a
 newer format supporting Hemi-Spherical Harmonics (HSH) in addition to PTM's
@@ -79,11 +86,11 @@ highlights (bright spots of light appearing on shiny objects) better than PTM,
 which yields matte images.''\cite*{library_of_congress_reflectance_2018}. One
 additional difference is the support of metadata as an XMP packet at the end of
 the file. As most locally available data is in PTM format, support for the RTI
-format is initially skipped for this project, but it will be easy to add support
+format is initially omitted for this project, but it will be easy to add support
 in the future.
 
 \subsection{RTI Viewers}
-Following RTI Viewers are currently available:
+The following RTI Viewers are currently available:
 \begin{description}
 \item[PTM Viewer]  from HP. The inital viewer application, available at
   \cite*{noauthor_hp_nodate}. Downloads for Windows, MacOS, HP-UX and Linux.
