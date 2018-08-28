@@ -60,24 +60,23 @@ In addition these non-functional requirements were decided upon:
 \section{Design}
 
 \subsection{Fileformat}
-Alhough the LoC deems the PTM format ``relatively transparent. It can be viewed
+Although the LoC deems the PTM format ``relatively transparent. It can be viewed
 in plain text editors. [\ldots] A very simple program would present these
 numbers in a human-readable
 form.''\cite*{library_of_congress_polynomial_2018} the author thinks that
 another implementation could be even more transparent and easy for people to
 understand. One simple inital step is to move to multiple files for representing
-the coefficients, each being a valid image (BMP or PNG) themselves. This allows
-for easy human inspection, simplifies texture loading in a web context (as PNG
+the coefficients, each being a valid image (BMP or PNG) themselves. This enables easy examination, simplifies texture loading in a web context (as PNG
 textures are supported) and allows easy interactions with other tools. Having
 multiple files anyway, the textual data description and metadata can also be
 stored in an extra plain text file, making it editable with standard tools. How
 to easily distribute multiple files though - just archive (zip) them and distribute as
 one. Web browsers do not unpack zips inside their JavaScript run times natively,
 but libraries\cite*{noauthor_jszip_nodate} exist for that functionality. All
-this multi file handling is abstracted away from the user, he will just handle a
+this multi file handling is abstracted away from the user, they will just handle a
 single \emph{.btf.zip} file, but provides access if interested. Having the
 ability to add extra files to the archive also allows for easy extensions, for
-example oxrti adds the layer and state saving functionalities, which are stored
+example the oxrti implementation adds the layer and state saving functionalities, which are stored
 as extra entries. For an unpacked example see~\autoref{unpacked}. Having the web
 as first target, JSON files are the natural match to describe the contained
 data. The data specification's main goal was future extensibility and  coverage
@@ -140,16 +139,53 @@ accessibility. One fairly self-explanatory example of converter output:
   textures for the single coefficients in grey scale format.}
 
 \subsection{Architecture}
+The primary goal for the implementation was to provide many small parts, which
+all should be replaceable and flexible to allow the easy addition of any new
+wished-for features and the integration of new rendering models. This requires
+abstractions in two areas: a flexible plugin system supporting the transparent
+integration of new user interfaces and a flexible rendering mechanism, as the
+different rendering models should not each be required to implement the viewing
+features like panning.
+
+\subsubsection{State Driven Plugins}
+The first can be solved as following: Single code units (`Plugins')
+containing all their functionality and only integrating with the rest of the
+program through an indirect system (`Hooks'), where plugins can declare their
+additions to a specific hook - be it a notification hook, where plugins register
+a function to be called when an event occurs; or a configuration hook, with
+which plugins extend some core functionality with their additions (e.g. adding a
+user interface component at some place). The problem of reactive data
+exchanges between plugins (e.g. light position change for the rendering
+algorithms) and data bindings (for the user interfaces) remains to be solved however.
+`Hooking' every variable read and write would result in excessive code bloat
+(however, *that would still be a more welcome solution than just writing
+variables). Instead an observer system should be used. Variable changes should
+be tracked transparently and reading functions/components be notified of changes
+automatically.
+
+This proposes the introduction of a state-driven plugin conforming to the
+Model-View-Controller pattern. Each plugin should explicitly declare what its
+state is (the model), have some specific code changing that state (the
+controller) and have one or more user facing components (the view(s)). With this
+the observations are one directional because they only go
+from state to models, which is far ea easier to track.
+
+For the current oxrti implementation, all Plugins and components are depicted
+in~\autoref{classes} and the concrete implementation is shown in~\autoref{sec_plugins}.
+
 \sidefig{classes}{Class and Component Overview}{All classes and components of
   the implementation. Inheritance arrows from each Plugin to the Plugin
-  base class omitted for clarity. Boxes are files, usually html/css/glsl.
+  base class have been omitted for sake of  clarity. Boxes are files, usually html/css/glsl.
   Cylinders are rendering stack nodes. Rectangles with two connectors on the
   left are user interface components.}
 
-\subsection{State-Driven}
-\todoT{State-Driven}
-\subsection{Plugins}
-\todoT{Plugins}
-\subsection{Rendering Stack}
-\todoT{Rendering Stack}
-
+\subsection{Renderer Stack}
+A more traditional frame based rendering stack would likely either re-render
+everything every frame (like a realtime game) or fully render all shaders on any input change. But in conjunction with the observation system
+above it is possible to implement a more efficient one. Rendering plugins
+register themselves at the appropriate hook with a specific priority (highest
+rendered first). When a rendering output changes, the successor node inside the
+rendering stack is notified of the change and performs a re-rendering on its own.
+With this, expansive operations like the model rendering can be cached on lower
+levels of the stack and e.g. the zoom plugin only transforms theses outputs.
+The concrete implementation is discussed in~\autoref{sec_rendererstack}.

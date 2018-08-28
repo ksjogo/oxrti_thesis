@@ -11,12 +11,16 @@ the ptm files, and the larger the ptm file, the better the compression benefits 
 The same pattern is evident in the load time as~\autoref{loadtimes} shows. The
 bigger the files are, the more profitable the shader implementation, especially
 after the one-time conversion is done.
-\fig{loadtimes}{Load time comparison}{Load time comparison.}
+\fig{loadtimes}{Load time comparison}{Orange is the time the RTIViewer takes to
+  open the PTM file of the corresponding size. Green is the time oxrti takes to
+  convert that PTM file into BTF format. Blue is the time oxrti takes to open
+  the corresponding BTF file. Red sums up blue and green. }
 
 \begin{table}[H]
 \begin{tabular}{|c |  c c c c c c|}
  \hline
- File & Pixel & Conv & Load & Load RTI & ptm size & btf size\\
+ File & Pixel & Conv & Load & Load RTI &
+ ptm size & btf size\\
   \hline
   \emph{AK1A\_LRGB} & 3008x2000 & 4906 & 1713 & 11800 & 54.1 & 30  \\
   \emph{Coin\_LRGB} & 7360x4912 & 24674 & 8224 & 59200 & 325.4 & 136  \\
@@ -35,7 +39,7 @@ maps was excluded, as the oxrti implementation is not doing these steps. The
 time to a full first render would be even longer. \emph{ptm size} is the file size in
 megabytes. \emph{btf size} is the file size of a plain BTF file (no extra oxrti
 state and/or layers). Test runs done on a ``MacBook Pro (Retina, 13-inch, Early
-2015); 2.9 GHz Intel Core i5; 16 GB 1867 MHz DDR3; Intel Iris Graphics 6100 1536 MB'' }
+2015); 2.9 GHz Intel Core i5; 16 GB 1867 MHz DDR3; Intel Iris Graphics 6100 1536 MB''. }
 \label{table_fileformat_results}
 \end{table}
 

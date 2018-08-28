@@ -47,12 +47,12 @@
 
 \setmintedinline{breaklines}
 
-\newminted[typescript]{TypeScript}{linenos,tabsize=4,breaklines,autogobble}
-\newminted[json]{JSON}{linenos,tabsize=4,breaklines,autogobble}
+\newminted[typescript]{TypeScript}{fontsize=\small,linenos,tabsize=4,breaklines,autogobble}
+\newminted[json]{JSON}{fontsize=\small,linenos,tabsize=4,breaklines,autogobble}
 
 \newcommand{\sourceExplicit}[3]{%
 \immediate\write18{./cutter.sh #1 #2 #3}%
-\inputminted[linenos,tabsize=4,breaklines,autogobble]{TypeScript}{minted.tmp}%
+\inputminted[fontsize=\small,linenos,tabsize=4,breaklines,autogobble]{TypeScript}{minted.tmp}%
 \immediate\write18{rm minted.tmp}%
 }%
 
@@ -76,5 +76,5 @@
 
 
 \newcommand{\glsl}[1]{%
-  \inputminted[linenos,tabsize=4,breaklines,autogobble]{glsl}{../oxrti/src/#1}
+  \inputminted[fontsize=\small,linenos,tabsize=4,breaklines,autogobble]{glsl}{../oxrti/src/#1}
 }%
