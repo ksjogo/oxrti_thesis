@@ -187,5 +187,5 @@ register themselves at the appropriate hook with a specific priority (highest
 rendered first). When a rendering output changes, the successor node inside the
 rendering stack is notified of the change and performs a re-rendering on its own.
 With this, expansive operations like the model rendering can be cached on lower
-levels of the stack and e.g. the zoom plugin only transforms theses outputs.
+levels of the stack. For example the zoom plugin merely transforms these cached outputs.
 The concrete implementation is discussed in~\autoref{sec_rendererstack}.

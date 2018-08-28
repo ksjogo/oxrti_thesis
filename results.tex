@@ -77,18 +77,27 @@ whereas the oxrti shaders use floats and their inaccuracies in addition to some
 potential texture filtering happening internally.
 
 \begin{figure}
-\begin{subfloat}[Warrior from RTIViewer]{\includegraphics[max width=0.5\linewidth]{images/Warrior_RTIViewer}}\end{subfloat}
-\begin{subfloat}[Warrior from oxrti]{\includegraphics[max width=0.5\linewidth]{images/Warrior_oxrti}}\end{subfloat}
+\begin{subfloat}[Warrior from RTIViewer]{\includegraphics[max width=0.32\linewidth]{images/Warrior_RTIViewer}}\end{subfloat}
+\begin{subfloat}[Warrior from oxrti]{\includegraphics[max
+    width=0.32\linewidth]{images/Warrior_oxrti}}\end{subfloat}
+\begin{subfloat}[Mapped diff]{\includegraphics[max width=0.32\linewidth]{images/Warrior_diff}}\end{subfloat}
+
 \caption[Warrior Comparison]{Comparison of RGB rendering between oxrti and RTIViewer. Light position
-set in both applications to $x=0.7071, y:=-0.7071$, so a light from bottom right.}
+set in both applications to $x=0.7071, y:=-0.7071$, so a light from bottom
+right. The difference is mapped from $[0,1,2] to [0,127,255]$
+for visualisation.}
 \label{compare1}
 \end{figure}
 
 \begin{figure}
-\begin{subfloat}[Tablet from RTIViewer]{\includegraphics[max width=0.5\linewidth]{images/tablet2_RTIViewer}}\end{subfloat}
-\begin{subfloat}[Tablet from oxrti]{\includegraphics[max width=0.5\linewidth]{images/tablet2_oxrti}}\end{subfloat}
+\begin{subfloat}[Tablet from RTIViewer]{\includegraphics[max width=0.32\linewidth]{images/tablet2_RTIViewer}}\end{subfloat}
+\begin{subfloat}[Tablet from oxrti]{\includegraphics[max
+    width=0.32\linewidth]{images/tablet2_oxrti}}\end{subfloat}
+\begin{subfloat}[Mapped diff]{\includegraphics[max width=0.32\linewidth]{images/tablet2_diff}}\end{subfloat}
+
 \caption[Tablet Comparison]{Comparison of LRGB rendering between oxrti and RTIViewer. Light position
-set in both applications to $x=-1, y=0$, so a light from the left.}
+set in both applications to $x=-1, y=0$, so a light from the left. The difference is mapped from $[0,1,2] to [0,127,255]$
+for visualisation.}
 \label{compare2}
 \end{figure}
 
