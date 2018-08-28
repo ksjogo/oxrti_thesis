@@ -1,21 +1,123 @@
 \section{Discussion}
+This section discusses the achieved results and proposes future avenues of research.
 
 \subsection{Novelties}
+Though some functionality of current RTI viewers could not be replicated during
+this project (mainly \.RTI file format support and, many novel things were
+achieved:
+\begin{itemize}
+\item Free Software first, the source code\cite*{noauthor_oxrti:_2018}, the
+  file format specification and accompanying
+  documentation\cite*{noauthor_oxrti_thesis_2018} are freely available online from
+  first day on.
+\item Full plugin orientation making it the most flexible and modifiable
+  implementation. The development speed picked up considerably feature wise the
+  longer the project went, as most hooks were defined and functions could be
+  stitched together to achieve fast turnarounds.
+\item Full web compability without local/native dependencies for preprocessing,
+  enabling a speedy and comfortable workflow, with no requirements of dropping
+  into a command line anywhere.
+\item Most transparent and flexible file format for RTI, while being smaller and
+  faster to load.
+\item Paint plugin, making round trips with graphical editing software
+  unnecessary.
+\item Flexible shader based architecture for improved performance.
+\end{itemize}
 
-\todoT{Novelties results}
-
-\subsection{Future Work}
+\subsection{Future Work}\label{sec_future}
 The future work can be split into two parts. Improvements of the current system,
-including better performance and bug fixes, and further extensions with new functionality.
+including better performance and bug fixes, and further extensions with new
+functionality. The following improvements are currently indicated (in order of importance):
+\begin{itemize}
+\item Support of \.RTI files. Requiring the addition of a new parser and some
+  new rendering base nodes.
+\item Support for some rendering modes like specular enhancement and others as
+  presented by Palma et al.\cite*{palma_dynamic_2010}.
+\end{itemize}
 
-\subsubsection{WebGL 2}\label{sec_futureGL}
+For new features three areas are interesting:
 
-\todoT{Future Work}
+Technical features:
+\begin{description}
+\item[Compression:] Support for the newly (June 2018) developed techniques by Ponchio et al\@.
+  to compress and enhance RTI data for web
+  applications\cite*{ponchio_compact_2018}
+\item[Animation support:] The state-driven architecture would easily support some
+  kind of tweening for light positions, zoom, etc. The image export could be
+  extended to support video output.
+\item[3D Engines:] Integration of some full blown 3D engine to support virtual scenes, with
+  the base nodes providing underlying textures for some objects. Would require a
+  reworking of the caching behaviour
+\item[HDR images:] The BTF file format can easily support higher
+  resolution and higher bit-depth pictures.
+\item[WebGL 2] integration with features like texture arrays could simplify some
+  calculations. Hold up by WebGL2 compability of common browser though.
+\item Rendering tree instead of rendering stack. The biggest performance problem
+  currently is the GPU's fill rate. A more flexible tree would require fewer
+  drawn pixels per user input, resulting in better performance.
+\item[Shader collation:] Currently there is no easy exchange between different
+  shader's code. Internal support/use of glslify\cite*{noauthor_glslify/glslify_2018} could help with that and
+  potentially allow the dynamic construction of shaders at runtime, purely depending on
+  the \emph{manifest.json} and not on handwritten support for all formats.
+\end{description}
 
-\subsection{Community Onboarding}
-\todoT{Community Onboarding}
+Being a web application some collaborative features come to mind, if the
+addition of a server is considered:
+\begin{description}
+\item[Online object registry:] Allowing captured objects to be registered under some
+  hash to uniquely identify them. Potential hosting of the corresponding data
+  file. Standard features like registration, login, privacy settings for objects.
+\item[Shared items]: Bookmarks, Notes, Layers, etc.\ could all be exchanged
+  online and potentially automatically synced between machines. The
+  mobx-state-tree in the background is automatically generating patch files and
+  all these objects have unique ids, making realtime exchange quite feasible.
+\item[Machine Learning:] Having a comprehensive database of crowd sourced
+  labelled data - e.g.\
+  labels for single pictograms of captured cuneiforms - could be the base for
+  some machine learning on the RTI data. Also specific light configurations
+  could be rated in their usefulness for analysing specific parts, feeding into
+  an auto lightning button.
+\end{description}
 
+The success of a shader based viewer indicates that also the RTI building part
+could be ready for some improvements through new oxrti plugins.
+\begin{description}
+\item[Shader based:] A new builder could use the GPU to parallelize the RTI
+  construction process, which currently are single-threaded and CPU bound. A
+  modern data set likely consist of more than 64 differently lighted images,
+  which would not be transferable at the same time to the (WebGL controlled) GPU directly, but
+  two options could be considered: Implementing the building part inside the
+  Electron app and its local process, which has full access to a machine's GPU
+  without WebGL limitations, but still controllable by the plugin architecture
+  through inter-process-communication. Alternatively the `stack of images'
+  could instead be split along the z-axis, as each texel only requires all its
+  values for all light positions and no values of neighbouring texels, allowing
+  for good parallelization.
+\item[Configuration based:] The current RTIBuilder (also provided by
+  CHI\cite*{noauthor_cultural_nodate-4}) does an light angle estimation per
+  captured image. With RTI domes these angles are fixed though could just be
+  given to the software for better accuracy.
+\item[Video based:] The capture and transfer of a lot of single images, which
+  are nearly the same (as the light will only change slightly between each
+  picture) could be accelerated by instead capturing a video. The WebGL support
+  for video textures could be an entry point.
+\end{description}
 
+\subsection{Community Outreach and Onboarding}
+The most important next step though is community outreach and onboarding as the
+nicest features only become useful if they are used. Outreach will happen in two
+different communities. The implementation core is providing a novel and modern
+infrastructure for any kind of plugin based software, and as such will be taken
+by the author to the JavaScript and TypeScript community. But more important is
+the RTI community. Initial outreach on social media platforms generated interest
+within the Classics community; the next steps are a more formal introduction of
+the software at the CHI forums\cite*{noauthor_chiforums:_nodate}, as they are
+frequented by many RTI users and a publication targeted at researchers in the
+field of archaeology and/or conservation.
 
 \section{Conclusion}
-\todoT{Conclusion}
+The project succeeded in developing a modern, exploratory, more `industrialized', web-based
+RTI viewer software with improved performance and new functionality; and in
+outlining future potential for novelties in applications around RTI\@. Whilst
+the author will ensure continued support for the software, the future
+plurality of developers and users of this software is of primary importance.

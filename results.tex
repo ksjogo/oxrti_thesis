@@ -2,7 +2,7 @@
 This section summarises the results of the project and adds some quantitative
 analysis of the implementation. The feature set is fully reflected inside the
 implementation section (or the table of contents), so no additional
-summarization is done here. Data \emph{file names} refer to the files distributed as \cite*{goslar_oxrti_data:_2018}.
+summarization is done here. Data \emph{file names} refer to the files distributed as \cite*{noauthor_oxrti_data:_2018}.
 
 \subsubsection{Performance}
 Currently Cultural Heritage Imaging provides the most frequently used RTI viewer\cite*{noauthor_cultural_nodate-1}. As a result, the performance comparisons have been made with that implementation as the reference. The data is shown
@@ -17,7 +17,7 @@ after the one-time conversion is done.
   the corresponding BTF file. Red sums up blue and green. }
 
 \begin{table}[H]
-\begin{tabular}{|c |  c c c c c c|}
+\begin{tabular}{|c | c c c c c c|}
  \hline
  File & Pixel & Conv & Load & Load RTI &
  ptm size & btf size\\
@@ -84,7 +84,7 @@ potential texture filtering happening internally.
 
 \caption[Warrior Comparison]{Comparison of RGB rendering between oxrti and RTIViewer. Light position
 set in both applications to $x=0.7071, y:=-0.7071$, so a light from bottom
-right. The difference is mapped from $[0,1,2] to [0,127,255]$
+right. The difference is mapped from $[0,1,2]$ to $[0,127,255]$
 for visualisation.}
 \label{compare1}
 \end{figure}
@@ -96,7 +96,7 @@ for visualisation.}
 \begin{subfloat}[Mapped diff]{\includegraphics[max width=0.32\linewidth]{images/tablet2_diff}}\end{subfloat}
 
 \caption[Tablet Comparison]{Comparison of LRGB rendering between oxrti and RTIViewer. Light position
-set in both applications to $x=-1, y=0$, so a light from the left. The difference is mapped from $[0,1,2] to [0,127,255]$
+set in both applications to $x=-1, y=0$, so a light from the left. The difference is mapped from $[0,1,2]$ to $[0,127,255]$
 for visualisation.}
 \label{compare2}
 \end{figure}

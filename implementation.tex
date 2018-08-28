@@ -215,7 +215,7 @@ The increasing support of the WebGL stack is the main reason why
   \fig{webglcomp}{WebGL compability}{WebGL compability as from the Mozilla
     Developer network\cite*{noauthor_webgl_nodate}.}  Potential improvements
   when WebGL 2 is more widely supported or in conditional plugins are discussed
-  in~\autoref{sec_futureGL}. One notable limitation of WebGL is
+  in~\autoref{sec_future}. One notable limitation of WebGL is
   \code{MAX_TEXTURE_IMAGE_UNITS}, the maximum amount of bound textures inside a
   single shader, which in most implementations is
   16\cite*{noauthor_webgl_nodate-3}, whereas the standard OpenGL implementations
@@ -798,10 +798,12 @@ point, but could be extended in the future for more native application features.
 The web process' entry point is \emph{src/renderer/index.tsx}, which is
 installing the electron extensions and the referring to the Loader for the rest
 of the application startup. Compilation is started by executing \code{npm
-  run-script electronbuild} on the comgmand line, the resulting artifacts will be
+  run-script electronbuild} on the command line, the resulting artifacts will be
 in the \emph{dist} folder, in the MacOS use case it will be
 \emph{dist/oxrti-*.dmg}. The development version can be started with \code{npm
-  start} on the CLI.
+  start} on the CLI\@. A visual impressions is shown in~\autoref{electronapp}.
+\fig{electronapp}{Electron App}{The bundled Electron app. Later versions will
+  add some kind of native menu.}
 
 \subsubsection{Web}
 The pure web target is controlled by \emph{webpack.config.js} and
@@ -815,7 +817,7 @@ to run the contained implementation.
 
 \subsubsection{Hosted}
 The build scripts are also generating a hosted version on each commit. On push
-the git repository\cite*{goslar_oxrti:_2018} is automatically feeding this to an
+the git repository\cite*{noauthor_oxrti:_2018} is automatically feeding this to an
 Azure Functions instance, reachable at
 \url{https://oxrtimaster.azurewebsites.net/api/azurestatic}. This process is
 controlled by \emph{webpack.functions.js} and the files in \emph{azurejs} and
@@ -826,21 +828,14 @@ site, each hosting the compiled \emph{.js} file or \emph{.html} file.
 There is currently no provisioning for a more automated handling of multiple
 \emph{oxrti.plugin.json} files, so it needs to be exchanged manually before
 building. A proposed embedded configuration for e.g.\ object galleries is provided by
-\emph{oxrti.plugins.embedded.json}.
+\emph{oxrti.plugins.embedded.json}. The result is shown in~\autoref{embedded}.
+\fig{embedded}{Embedded Version}{Embedded web version, with SingleView plugin and
+  without Converter, Bookmarks and Paint.}
 
 \subsubsection{Mobile Phones}
 Mobile phones are supported, but currently might have
 problems with the distinction between \emph{touch} and \emph{click} events and
 currently have no specialized layout.
-
-\begin{figure}
-\begin{subfloat}[The bundled Electron app. Later versions will
-  add some kind of native menu.]{\includegraphics[max width=0.32\linewidth]{images/electronapp}}\end{subfloat}
-\begin{subfloat}[Embedded web version, with SingleView plugin and
-  without Converter, Bookmarks and Paint.]{\includegraphics[max width=0.32\linewidth]{images/embedded}}\label{embedded}\end{subfloat}
-\begin{subfloat}[Implementation running on a Huawei P10
-  mobile phone with the Chrome browser. Opening a BTF is done through clicking the
-  upload area.]{\includegraphics[max width=0.32\linewidth]{images/rtimobile}}\label{rtimobile}\end{subfloat}
-\caption[Target Comparison]{Target Comparison}
-\label{targetcomparison}
-\end{figure}
+\fig{rtimobile}{RTI Mobile}{Implementation running on a Huawei P10
+  mobile phone with the Chrome browser. Opening a BTF is done through clicking
+  the upload area.}
